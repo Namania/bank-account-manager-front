@@ -8,6 +8,7 @@
     },
     "cancel": "Cancel",
     "delete": "Delete",
+    "fetch_error": "Unable to contact the API",
     "header": {
       "actions": {
         "base": "New",
@@ -55,6 +56,17 @@
     }
   },
   "account": {
+    "created": "Account created",
+    "dialog": {
+      "description": "Fill in the information below to create a new account.",
+      "title": "New Account"
+    },
+    "fields": {
+      "label": "Account name",
+      "label_placeholder": "ex: Main",
+      "balance": "Initial balance",
+      "send": "Save"
+    },
     "empty": "No account found",
     "first": "Create my first account",
     "shared_one": "Shared with {{count}} user",
@@ -97,6 +109,15 @@
     "new": "New Categorie"
   },
   "transaction": {
-    "new": "New Transaction"
+    "new": "New Transaction",
+    "table": {
+      "amount": "Amount",
+      "category": "Category",
+      "date": "Date",
+      "description": "Description",
+      "id": "Id",
+      "receiver": "Receiver",
+      "sender": "Sender"
+    }
   }
 }

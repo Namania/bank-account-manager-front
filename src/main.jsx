@@ -15,6 +15,7 @@ import LoginPage from './pages/LoginPage';
 import { AuthProvider } from "./auth/AuthContext";
 import Category from './pages/Categories';
 import { Toaster } from './components/ui/sonner';
+import Transaction from './pages/Transaction';
 
 export default function Root() {
   const [maintenance, setMaintenance] = useState(null);
@@ -50,7 +51,7 @@ export default function Root() {
 
             <Route element={<LayoutWrapper />}>
               <Route path="/" element={<Account />} />
-              <Route path="/transaction" element={<Account />} />
+              <Route path="/transaction" element={<Transaction />} />
               <Route path="/category" element={<Category />} />
               <Route path="*" element={<NotFound />} />
             </Route>

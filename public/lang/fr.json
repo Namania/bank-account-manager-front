@@ -8,6 +8,7 @@
     },
     "cancel": "Annuler",
     "delete": "Supprimer",
+    "fetch_error": "Impossible de contacter l'API",
     "header": {
       "actions": {
         "base_male": "Nouveau",
@@ -56,6 +57,17 @@
     }
   },
   "account": {
+    "created": "Compte créé avec succès",
+    "dialog": {
+      "description": "Remplissez les informations ci-dessous pour créer un nouveau compte.",
+      "title": "Nouveau Compte"
+    },
+    "fields": {
+      "label": "Nom du compte",
+      "label_placeholder": "ex: Principal",
+      "balance": "Solde initial",
+      "send": "Créer le compte"
+    },
     "empty": "Aucun compte trouvé",
     "first": "Créer mon premier compte",
     "shared_one": "Partagé avec {{count}} utilisateur",
@@ -98,6 +110,15 @@
     "new": "Nouvelle Catégorie"
   },
   "transaction": {
-    "new": "Nouvelle Transaction"
+    "new": "Nouvelle Transaction",
+    "table": {
+      "amount": "Montant",
+      "category": "Catégorie",
+      "date": "Date",
+      "description": "Description",
+      "id": "Id",
+      "receiver": "Destinataire",
+      "sender": "Expéditeur"
+    }
   }
 }

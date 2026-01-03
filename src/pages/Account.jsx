@@ -1,17 +1,24 @@
 import { PlusIcon, Wallet } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getAccounts } from "@/api/getAccounts";
+import { getAccounts } from "@/api/account";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
+import { CreateAccountDialog } from "@/components/CreateAccountDialog";
 
 export default function Account() {
   const { t } = useTranslation();
   const [accounts, setAccounts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const { isModalOpen, setIsModalOpen } = useOutletContext();
+
+  const handleCreated = (newCat) => {
+    setAccounts((prev) => [...prev, newCat]);
+  };
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -52,7 +59,12 @@ export default function Account() {
   }
 
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))] items-stretch">
+    <div className="grid gap-4 grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] items-stretch">
+      <CreateAccountDialog
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onCreated={handleCreated}
+      />
       {accounts.map((account) => (
         <Link 
           key={account.id} 
