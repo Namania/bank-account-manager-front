@@ -52,7 +52,7 @@ export default function Account() {
             <CardContent>
               <div className="flex items-baseline justify-between">
                 <div className="text-2xl font-bold">
-                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance)}
+                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
                 </div>
                 {/* <Badge variant={account.balance >= 0 ? "secondary" : "destructive"} className="ml-2">
                   {account.balance >= 0 ? <ArrowUpRight className="mr-1 h-3 w-3" /> : <ArrowDownRight className="mr-1 h-3 w-3" />}
