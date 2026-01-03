@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
 import { DynamicBreadcrumb } from "./DynamicBreadcrumb";
@@ -8,6 +8,7 @@ import Header from "./Header"
 import { Button } from "./ui/button";
 import { PlusIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 export default function Layout() {
   const { t } = useTranslation();
@@ -15,24 +16,26 @@ export default function Layout() {
   const path = location.pathname;
   const breadcrumbItems = getBreadCrumbItems(path);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const actions = {
     "/": {
       context: "male",
-      langKey: "account"
+      langKey: "account.new"
     },
     "/transaction": {
       context: "female",
-      langKey: "transaction"
+      langKey: "transaction.new"
     },
     "/category": {
       context: "female",
-      langKey: "category"
+      langKey: "category.new"
     }
   };
 
   const current = Object.keys(actions).includes(path) ? actions[path] : {
     context: "male",
-    langKey: "not-found"
+    langKey: "core.header.actions.not-found"
   }
 
   return (
@@ -40,15 +43,13 @@ export default function Layout() {
       <AppSidebar />
       <main className="flex-1 p-2 flex flex-col min-h-screen">
         <Header breadcrumb={ <DynamicBreadcrumb items={breadcrumbItems} /> } >
-          <Link to={path + "/new"}>
-            <Button>
-              <PlusIcon />
-              { `${t('core.header.actions.base', { context: current.context })} ${t(`core.header.actions.${current.langKey}`)}` }
-            </Button>
-          </Link>
+          <Button onClick={() => setIsModalOpen(true)}>
+            <PlusIcon />
+            { t(current.langKey) }
+          </Button>
         </Header>
         <div className="p-2 flex-1">
-          <Outlet />
+          <Outlet context={{ isModalOpen, setIsModalOpen }} />
         </div>
       </main>
     </SidebarProvider>

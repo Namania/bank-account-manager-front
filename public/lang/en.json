@@ -6,6 +6,8 @@
       "not-found": "Page not found",
       "transaction": "Transactions"
     },
+    "cancel": "Cancel",
+    "delete": "Delete",
     "header": {
       "actions": {
         "base": "New",
@@ -51,5 +53,50 @@
       "dark": "Dark",
       "system": "System"
     }
+  },
+  "account": {
+    "empty": "No account found",
+    "first": "Create my first account",
+    "shared_one": "Shared with {{count}} user",
+    "shared_other": "Shared with avec {{count}} users",
+    "new": "New Account"
+  },
+  "category": {
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "dialog": {
+      "description": "Fill in the information below to create a new category.",
+      "title": "New Categorie"
+    },
+    "delete": {
+      "confirm_title": "Are you absolutely sure?",
+      "confirm_desc": "This action is irreversible. It will permanently delete the category and may affect related transactions.",
+      "actions": {
+        "error": "Unable to delete the category",
+        "success": "Categorie deleted"
+      }
+    },
+    "edit": {
+      "actions": {
+        "error": "Unable to change category",
+        "success": "Category successfully updated"
+      },
+      "description": "Fill in the information below to change the category.",
+      "title": "Update category"
+    },
+    "empty": "No category",
+    "fields": {
+      "color": "Color",
+      "label": "Name",
+      "save": "Save",
+      "send": "Create"
+    },
+    "first": "Add your first category",
+    "new": "New Categorie"
+  },
+  "transaction": {
+    "new": "New Transaction"
   }
 }

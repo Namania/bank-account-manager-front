@@ -6,6 +6,8 @@
       "not-found": "Page introuvable",
       "transaction": "Transactions"
     },
+    "cancel": "Annuler",
+    "delete": "Supprimer",
     "header": {
       "actions": {
         "base_male": "Nouveau",
@@ -52,5 +54,50 @@
       "dark": "Sombre",
       "system": "Système"
     }
+  },
+  "account": {
+    "empty": "Aucun compte trouvé",
+    "first": "Créer mon premier compte",
+    "shared_one": "Partagé avec {{count}} utilisateur",
+    "shared_other": "Partagé avec {{count}} utilisateurs",
+    "new": "Nouveau Compte"
+  },
+  "category": {
+    "actions": {
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    },
+    "dialog": {
+      "description": "Remplissez les informations ci-dessous pour créer une nouvelle catégorie.",
+      "title": "Nouvelle Catégorie"
+    },
+    "delete": {
+      "title": "Êtes-vous absolument sûr ?",
+      "desc": "Cette action est irréversible. Cela supprimera définitivement la catégorie et pourrait affecter les transactions liées.",
+      "actions": {
+        "error": "Impossible de supprimer la catégorie",
+        "success": "Catégorie supprimée avec succès"
+      }
+    },
+    "edit": {
+      "actions": {
+        "error": "Impossible de modifier la catégorie",
+        "success": "Catégorie modifiée avec succès"
+      },
+      "description": "Remplissez les informations ci-dessous pour modifier la catégorie.",
+      "title": "Modifier la catégorie"
+    },
+    "empty": "Aucune catégorie",
+    "fields": {
+      "color": "Couleur",
+      "label": "Nom",
+      "save": "Enregistrer",
+      "send": "Créer"
+    },
+    "first": "Ajouter une catégorie",
+    "new": "Nouvelle Catégorie"
+  },
+  "transaction": {
+    "new": "Nouvelle Transaction"
   }
 }

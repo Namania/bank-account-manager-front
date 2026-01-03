@@ -13,6 +13,8 @@ import { useTranslation } from "react-i18next";
 import { isLogged } from './auth/isLogged';
 import LoginPage from './pages/LoginPage';
 import { AuthProvider } from "./auth/AuthContext";
+import Category from './pages/Categories';
+import { Toaster } from './components/ui/sonner';
 
 export default function Root() {
   const [maintenance, setMaintenance] = useState(null);
@@ -49,13 +51,13 @@ export default function Root() {
             <Route element={<LayoutWrapper />}>
               <Route path="/" element={<Account />} />
               <Route path="/transaction" element={<Account />} />
-              <Route path="/category" element={<Account />} />
+              <Route path="/category" element={<Category />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
-
-            <Route path="*" element={<NotFound />} />
 
           </Routes>
         </BrowserRouter>
+        <Toaster position="bottom-right" richColors />
       </ThemeProvider>
     </AuthProvider>
   );
