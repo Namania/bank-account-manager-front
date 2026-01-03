@@ -1,0 +1,56 @@
+{
+  "core": {
+    "breadcrumb": {
+      "account": "Comptes",
+      "category": "Catégories",
+      "not-found": "Page introuvable",
+      "transaction": "Transactions"
+    },
+    "header": {
+      "actions": {
+        "base_male": "Nouveau",
+        "base_female": "Nouvelle",
+        "account": "Compte",
+        "category": "Catégorie",
+        "not-found": "",
+        "transaction": "Transaction"
+      }
+    },
+    "login": {
+      "title": "Connexion",
+      "errors": {
+        "invalid": "Identifiant ou mot de passe invalide",
+        "password": "Le mot de passe doit avoir au minimum 6 charactères.",
+        "username": "L'identifiant doit avoir au minimum 2 charactères."
+      },
+      "fields": {
+        "username": {
+          "label": "Nom d'utilisateur",
+          "placeholder": "Spiderman"
+        },
+        "password": {
+          "label": "Mot de passe",
+          "placeholder": "Entrez votre mot de passe"
+        },
+        "send": "S'identifier"
+      }
+    },
+    "maintenance": {
+      "title": "Maintenance en cours",
+      "description": "Nous mettons à jour le site pour vous offrir une meilleure expérience. Revenez d'ici quelques minutes !"
+    },
+    "nav": {
+      "logout": "Déconnexion",
+      "account": "Mon compte"
+    },
+    "not-found": {
+      "title": "Page introuvable",
+      "description": "L'URL demandée n'existe pas. Utilisez la barre latérale pour continuer votre navigation."
+    },
+    "theme": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    }
+  }
+}

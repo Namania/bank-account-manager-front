@@ -1,0 +1,55 @@
+{
+  "core": {
+    "breadcrumb": {
+      "account": "Accounts",
+      "category": "Categories",
+      "not-found": "Page not found",
+      "transaction": "Transactions"
+    },
+    "header": {
+      "actions": {
+        "base": "New",
+        "account": "Account",
+        "category": "Category",
+        "not-found": "",
+        "transaction": "Transaction"
+      }
+    },
+    "login": {
+      "title": "Login",
+      "errors": {
+        "invalid": "Username or password invalid",
+        "password": "Password must be 6 long",
+        "username": "Username must have a minimum of 2 characters."
+      },
+      "fields": {
+        "username": {
+          "label": "Username",
+          "placeholder": "Spiderman"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter your password"
+        },
+        "send": "Login"
+      }
+    },
+    "maintenance": {
+      "title": "Maintenance in progress",
+      "description": "We're updating the site to offer you a better experience. Please come back in a few minutes!"
+    },
+    "nav": {
+      "logout": "Logout",
+      "account": "My account"
+    },
+    "not-found": {
+      "title": "Page not found",
+      "description": "The requested URL does not exist. Use the sidebar to continue browsing."
+    },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    }
+  }
+}
