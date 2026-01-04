@@ -71,7 +71,7 @@ export default function Account() {
         };
       });
 
-      toast.success(t('account.created'));
+      toast.success(t('transaction.created'));
     } catch (error) {
       toast.error(t('core.fetch_error'));
     }
@@ -104,7 +104,7 @@ export default function Account() {
         };
       });
 
-      toast.success(t('account.created'));
+      toast.success(t('transaction.created'));
     } catch (error) {
       toast.error(t('core.fetch_error'));
     }
@@ -137,7 +137,7 @@ export default function Account() {
         };
       });
 
-      toast.success(t('account.created'));
+      toast.success(t('transaction.created'));
     } catch (error) {
       toast.error(t('core.fetch_error'));
     }

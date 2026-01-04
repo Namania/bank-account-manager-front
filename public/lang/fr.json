@@ -152,6 +152,7 @@
     "new": "Nouvelle Catégorie"
   },
   "transaction": {
+    "created": "Transaction effectuée",
     "new": "Nouvelle Transaction",
     "table": {
       "amount": "Montant",
