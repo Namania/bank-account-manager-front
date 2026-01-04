@@ -3,7 +3,7 @@ import { ThemeProvider } from "@/components/ThemeProvider"
 import './index.css'
 import "./i18n";
 
-import Account from './pages/Account.jsx'
+import Accounts from './pages/Accounts.jsx'
 import Layout from './components/Layout'
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import NotFound from './pages/NotFound';
@@ -16,6 +16,7 @@ import { AuthProvider } from "./auth/AuthContext";
 import Category from './pages/Categories';
 import { Toaster } from './components/ui/sonner';
 import Transaction from './pages/Transaction';
+import Account from './pages/Account';
 
 export default function Root() {
   const [maintenance, setMaintenance] = useState(null);
@@ -50,7 +51,8 @@ export default function Root() {
             <Route path="/auth/login" element={<LoginPage />} />
 
             <Route element={<LayoutWrapper />}>
-              <Route path="/" element={<Account />} />
+              <Route path="/" element={<Accounts />} />
+              <Route path="/account/:id" element={<Account />} />
               <Route path="/transaction" element={<Transaction />} />
               <Route path="/category" element={<Category />} />
               <Route path="*" element={<NotFound />} />

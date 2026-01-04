@@ -9,3 +9,17 @@ export const getTransactions = async (page = 1) => {
     const response = await axios.get(`${API_URL}/transactions/?page=${page}`);
     return response.data; 
 };
+
+export const getTransactionsById = async (id, page = 1) => {
+    const token = localStorage.getItem(`${LOCAL_KEY}.token`);
+    axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+    const response = await axios.get(`${API_URL}/transactions/by_account/${id}/?page=${page}`);
+    return response.data; 
+};
+
+export const createTransaction = async (data) => {
+    const token = localStorage.getItem(`${LOCAL_KEY}.token`);
+    axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+    const response = await axios.post(`${API_URL}/transactions/`, data);
+    return response.data;
+}

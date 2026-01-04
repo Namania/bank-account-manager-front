@@ -1,7 +1,7 @@
 {
   "core": {
     "breadcrumb": {
-      "account": "Accounts",
+      "accounts": "Accounts",
       "category": "Categories",
       "not-found": "Page not found",
       "transaction": "Transactions"
@@ -57,20 +57,43 @@
   },
   "account": {
     "created": "Account created",
+    "delete": {
+      "title": "Are you absolutely sure?",
+      "desc": "This action is irreversible. It will permanently deactivate the account.",
+      "label": "Delete",
+      "actions": {
+        "error": "Unable to delete the account",
+        "success": "Account deleted"
+      }
+    },
     "dialog": {
       "description": "Fill in the information below to create a new account.",
       "title": "New Account"
     },
+    "empty": "No account found",
     "fields": {
       "label": "Account name",
       "label_placeholder": "ex: Main",
       "balance": "Initial balance",
       "send": "Save"
     },
-    "empty": "No account found",
     "first": "Create my first account",
+    "info": {
+      "actions": {
+        "credit": "Credit",
+        "debit": "Debit",
+        "over_account": "Transaction"
+      },
+      "balance": "Current Balance",
+      "personal": "Personal",
+      "shared": "Shared",
+      "title": "Account information"
+    },
     "shared_one": "Shared with {{count}} user",
     "shared_other": "Shared with avec {{count}} users",
+    "transactions": {
+      "recent": "Recent transactions"
+    },
     "new": "New Account"
   },
   "category": {

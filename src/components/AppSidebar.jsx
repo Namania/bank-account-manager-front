@@ -26,7 +26,7 @@ export function AppSidebar() {
 
     const items = [
         {
-            title: t(`${location}.account`),
+            title: t(`${location}.accounts`),
             url: "/",
             icon: PiggyBankIcon,
         },

@@ -1,12 +1,13 @@
 {
   "core": {
     "breadcrumb": {
-      "account": "Comptes",
+      "accounts": "Comptes",
       "category": "Catégories",
       "not-found": "Page introuvable",
       "transaction": "Transactions"
     },
     "cancel": "Annuler",
+    "create": "Créer",
     "delete": "Supprimer",
     "fetch_error": "Impossible de contacter l'API",
     "header": {
@@ -58,20 +59,54 @@
   },
   "account": {
     "created": "Compte créé avec succès",
+    "delete": {
+      "title": "Êtes-vous absolument sûr ?",
+      "desc": "Cette action est irréversible. Cela désactivera définitivement le compte.",
+      "label": "Supprimer",
+      "actions": {
+        "error": "Impossible de supprimer le compte",
+        "success": "Compte supprimée avec succès"
+      }
+    },
     "dialog": {
       "description": "Remplissez les informations ci-dessous pour créer un nouveau compte.",
       "title": "Nouveau Compte"
     },
+    "empty": "Aucun compte trouvé",
     "fields": {
       "label": "Nom du compte",
       "label_placeholder": "ex: Principal",
       "balance": "Solde initial",
       "send": "Créer le compte"
     },
-    "empty": "Aucun compte trouvé",
     "first": "Créer mon premier compte",
+    "info": {
+      "actions": {
+        "credit": "Créditer",
+        "debit": "Débiter",
+        "over_account": "Transaction"
+      },
+      "balance": "Solde Actuel",
+      "personal": "Personnel",
+      "shared": "Partagé",
+      "title": "Information du compte"
+    },
     "shared_one": "Partagé avec {{count}} utilisateur",
     "shared_other": "Partagé avec {{count}} utilisateurs",
+    "transactions": {
+      "recent": "Transactions récentes",
+      "desc": "Créez une transaction avec ce compte",
+      "credit": "Créditer le compte",
+      "debit": "Débiter le compte",
+      "over_account": "Faire une transaction",
+      "fields": {
+        "amount": "Montant",
+        "category": "Catégorie",
+        "category_placeholder": "Sélectionnez une catégorie",
+        "receiver": "Destinataire",
+        "receiver_placeholder": "Sélectionnez un destinataire"
+      }
+    },
     "new": "Nouveau Compte"
   },
   "category": {

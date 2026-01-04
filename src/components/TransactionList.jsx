@@ -34,17 +34,17 @@ export default function TransactionList({ transactions }) {
                             <TableCell>
                                 <Badge
                                     variant="outline"
-                                    className={`font-medium ${tx.sender.label === 'Bank' ? 'text-neutral-600' : ''}`}
+                                    className={`font-medium ${tx.sender_details.label === 'Bank' ? 'text-neutral-600' : ''}`}
                                 >
-                                    {tx.sender.label}
+                                    {tx.sender_details.label}
                                 </Badge>
                             </TableCell>
                             <TableCell>
                                 <Badge
                                     variant="outline"
-                                    className={`font-medium ${tx.receiver.label === 'Bank' ? 'text-neutral-600' : ''}`}
+                                    className={`font-medium ${tx.receiver_details.label === 'Bank' ? 'text-neutral-600' : ''}`}
                                 >
-                                    {tx.receiver.label}
+                                    {tx.receiver_details.label}
                                 </Badge>
                             </TableCell>
                             <TableCell>
@@ -53,19 +53,19 @@ export default function TransactionList({ transactions }) {
                                         variant="outline"
                                         className="font-medium"
                                         style={{
-                                            borderColor: tx.category.color,
-                                            color: tx.category.color,
-                                            backgroundColor: `${tx.category.color}10`
+                                            borderColor: tx.category_details.color,
+                                            color: tx.category_details.color,
+                                            backgroundColor: `${tx.category_details.color}10`
                                         }}
                                     >
-                                        {tx.category.label}
+                                        {tx.category_details.label}
                                     </Badge>
                                 ) : (
                                     <span className="text-muted-foreground text-xs italic">Sans catégorie</span>
                                 )}
                             </TableCell>
-                            <TableCell className={`font-bold text-sm ${tx.sender.label === 'Bank' ? 'text-green-600' : tx.receiver.label === 'Bank' ? 'text-red-500' : ''}`}>
-                                {tx.receiver.label === 'Bank' ? '-' : ''}{parseFloat(tx.amount).toLocaleString('fr-FR', {
+                            <TableCell className={`font-bold text-sm ${tx.sender_details.label === 'Bank' ? 'text-green-600' : tx.receiver_details.label === 'Bank' ? 'text-red-500' : ''}`}>
+                                {tx.receiver_details.label === 'Bank' ? '-' : ''}{parseFloat(tx.amount).toLocaleString('fr-FR', {
                                     style: 'currency',
                                     currency: 'EUR'
                                 })}
