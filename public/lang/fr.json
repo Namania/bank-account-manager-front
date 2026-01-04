@@ -94,6 +94,7 @@
     "shared_one": "Partagé avec {{count}} utilisateur",
     "shared_other": "Partagé avec {{count}} utilisateurs",
     "transactions": {
+      "empty": "Aucune transaction",
       "recent": "Transactions récentes",
       "desc": "Créez une transaction avec ce compte",
       "credit": "Créditer le compte",

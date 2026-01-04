@@ -27,7 +27,7 @@ export function CreateAccountDialog({ open, onOpenChange, onCreated }) {
             const response = await createAccount({
                 owners,
                 label, 
-                balance: parseFloat(balance),
+                balance: parseFloat(balance) * 100,
             });
             onCreated(response);
             onOpenChange(false);

@@ -483,9 +483,11 @@ export default function Account() {
           {transactionsData.results.length > 0 ? (
             <TransactionList transactions={transactionsData.results} />
           ) : (
-            <div className="p-12 text-center text-muted-foreground italic">
-              {t('account.transactions.empty')}
-            </div>
+            <Card className="border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
+              <div className="p-12 text-center text-muted-foreground italic">
+                {t('account.transactions.empty')}
+              </div>
+            </Card>
           )}
 
           <Pagination>
