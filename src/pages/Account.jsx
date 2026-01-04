@@ -19,6 +19,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { getCategories } from "@/api/category";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TransactionChart } from "@/components/TransactionChart";
 
 export default function Account() {
   const { id } = useParams();
@@ -463,15 +464,18 @@ export default function Account() {
         </Card>
 
         <Card className="lg:col-span-2 border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
-          <div className="flex flex-col items-center text-center space-y-3">
-            <div className="p-3 bg-muted rounded-full">
-              <Wallet className="h-6 w-6 text-muted-foreground/50" />
+          {transactionsData.results.length > 0 ?
+            <TransactionChart transactions={transactionsData.results} />
+            : <div className="flex flex-col items-center text-center space-y-3">
+              <div className="p-3 bg-muted rounded-full">
+                <Wallet className="h-6 w-6 text-muted-foreground/50" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">{t('account.chart.empty_title')}</p>
+                <p className="text-xs text-muted-foreground/60">{t('account.chart.empty_desc')}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Graphique d'évolution</p>
-              <p className="text-xs text-muted-foreground/60">Les données seront disponibles après vos premières transactions</p>
-            </div>
-          </div>
+          }
         </Card>
 
         <div className="lg:col-span-3 pt-4 space-y-6">

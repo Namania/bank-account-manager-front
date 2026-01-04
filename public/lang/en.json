@@ -92,6 +92,12 @@
     },
     "shared_one": "Shared with {{count}} user",
     "shared_other": "Shared with avec {{count}} users",
+    "chart": {
+      "empty_title": "Trend graph",
+      "empty_desc": "The data will be available after your first transactions.",
+      "title": "Change in balance",
+      "desc": "Visualization of flows over the period"
+    },
     "transactions": {
       "empty": "No transaction",
       "recent": "Recent transactions",

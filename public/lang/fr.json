@@ -93,6 +93,12 @@
     },
     "shared_one": "Partagé avec {{count}} utilisateur",
     "shared_other": "Partagé avec {{count}} utilisateurs",
+    "chart": {
+      "empty_title": "Graphique d'évolution",
+      "empty_desc": "Les données seront disponibles après vos premières transactions",
+      "title": "Évolution du solde",
+      "desc": "Visualisation des flux sur la période"
+    },
     "transactions": {
       "empty": "Aucune transaction",
       "recent": "Transactions récentes",
