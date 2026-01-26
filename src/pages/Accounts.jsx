@@ -50,7 +50,7 @@ export default function Accounts() {
     return (
       <div className="h-full flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
         <p className="text-muted-foreground mb-4">{t('account.empty')}</p>
-        <Button asChild>
+        <Button>
           <PlusIcon className="mr-2 h-4 w-4" /> {t('account.first')}
         </Button>
       </div>

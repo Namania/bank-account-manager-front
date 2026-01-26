@@ -71,7 +71,7 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter className="flex justify-center items-center">
-                <div className="mt-auto border-t p-2">
+                <div className="mt-auto w-full border-t p-2">
                     <NavUser />
                 </div>
             </SidebarFooter>

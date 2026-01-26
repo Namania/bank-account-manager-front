@@ -34,7 +34,7 @@ export function NavUser() {
       <DropdownMenuTrigger asChild>
         <button className="flex w-full items-center gap-2 rounded-lg p-2 text-left text-sm transition-hover hover:bg-accent outline-none">
           <Avatar className="h-8 w-8 rounded-lg">
-            <AvatarFallback className="rounded-lg">
+            <AvatarFallback className="rounded-lg bg-yellow-600">
               {initial}
             </AvatarFallback>
           </Avatar>
