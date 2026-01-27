@@ -57,10 +57,12 @@ export default function Layout() {
       <AppSidebar />
       <main className="flex-1 p-2 flex flex-col min-h-screen">
         <Header breadcrumb={ <DynamicBreadcrumb items={breadcrumbItems} /> } >
-          <Button variant={current.variant} onClick={() => setIsModalOpen(true)}>
-            {current.icon}
-            { t(current.langKey) }
-          </Button>
+          {
+            path !== "/transaction" ? <Button variant={current.variant} onClick={() => setIsModalOpen(true)}>
+              {current.icon}
+              { t(current.langKey) }
+            </Button> : null
+          }
         </Header>
         <div className="p-2 flex-1">
           <Outlet context={{ isModalOpen, setIsModalOpen }} />

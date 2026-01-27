@@ -109,6 +109,8 @@
         "amount": "Amount",
         "category": "Category",
         "category_placeholder": "Select a category",
+        "description": "Description",
+        "description_placeholder": "Online purchase",
         "receiver": "Receiver",
         "receiver_placeholder": "Select a receiver"
       }

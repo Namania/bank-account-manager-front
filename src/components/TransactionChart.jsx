@@ -8,7 +8,7 @@ export const prepareChartData = (transactions) => {
     .map(t => ({
       date: new Date(t.create_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
       timestamp: new Date(t.create_at).getTime(),
-      amount: parseFloat(t.amount)
+      amount: parseFloat(import.meta.env.VITE_BANK_ID === t.receiver ? -t.amount : t.amount)
     }))
     .sort((a, b) => a.timestamp - b.timestamp)
     .reduce((acc, curr, index) => {

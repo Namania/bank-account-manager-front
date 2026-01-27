@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { getCategories } from "@/api/category";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionChart } from "@/components/TransactionChart";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Account() {
   const { id } = useParams();
@@ -31,6 +32,7 @@ export default function Account() {
   const [amount, setAmount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedReceiver, setSelectedReceiver] = useState("");
+  const [description, setDescription] = useState("");
 
   const [account, setAccount] = useState(null);
   const [accounts, setAccounts] = useState(null);
@@ -53,7 +55,8 @@ export default function Account() {
         sender: bankId,
         receiver: account.id,
         amount: amountInCents,
-        category: selectedCategory
+        category: selectedCategory,
+        comment: description,
       });
 
       setTransactionsData((prev) => ({
@@ -61,15 +64,8 @@ export default function Account() {
         count: prev.count + 1,
         results: [response, ...prev.results]
       }));
-      setShowCreditDialog(false);
-      setAccount((prevAccount) => {
-        if (!prevAccount) return null;
-        
-        return {
-          ...prevAccount,
-          balance: prevAccount.balance + (amount * 100)
-        };
-      });
+      handleOpenChange(setShowCreditDialog, false);
+      updateAccount();
 
       toast.success(t('transaction.created'));
     } catch (error) {
@@ -86,7 +82,8 @@ export default function Account() {
         sender: account.id,
         receiver: bankId,
         amount: amountInCents,
-        category: selectedCategory
+        category: selectedCategory,
+        comment: description,
       });
 
       setTransactionsData((prev) => ({
@@ -94,15 +91,8 @@ export default function Account() {
         count: prev.count + 1,
         results: [response, ...prev.results]
       }));
-      setShowDebitDialog(false);
-      setAccount((prevAccount) => {
-        if (!prevAccount) return null;
-        
-        return {
-          ...prevAccount,
-          balance: prevAccount.balance - (amount * 100)
-        };
-      });
+      handleOpenChange(setShowDebitDialog, false);
+      updateAccount();
 
       toast.success(t('transaction.created'));
     } catch (error) {
@@ -119,7 +109,8 @@ export default function Account() {
         sender: account.id,
         receiver: selectedReceiver,
         amount: amountInCents,
-        category: selectedCategory
+        category: selectedCategory,
+        comment: description,
       });
 
       setTransactionsData((prev) => ({
@@ -127,21 +118,28 @@ export default function Account() {
         count: prev.count + 1,
         results: [response, ...prev.results]
       }));
-      setShowTransactionDialog(false);
-      setAccount((prevAccount) => {
-        if (!prevAccount) return null;
-        
-        return {
-          ...prevAccount,
-          balance: prevAccount.balance - (amount * 100)
-        };
-      });
+      handleOpenChange(setShowTransactionDialog, false);
+      updateAccount();
 
       toast.success(t('transaction.created'));
     } catch (error) {
       toast.error(t('core.fetch_error'));
     }
   };
+
+  const handleOpenChange = (callback, open) => {
+    if (!open) {
+      callback(false);
+      setAmount(0);
+      setSelectedCategory("");
+      setSelectedReceiver("");
+      setDescription("");
+    }
+  }
+
+  const updateAccount = async () => {
+    setAccount(await getAccount(id));
+  }
 
   const confirmDelete = async () => {
     if (!id) return;
@@ -270,7 +268,7 @@ export default function Account() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Dialog open={showCreditDialog} onOpenChange={setShowCreditDialog}>
+            <Dialog open={showCreditDialog} onOpenChange={(open) => {handleOpenChange(setShowCreditDialog, open)}}>
               <DialogContent className="sm:max-w-[425px]">
                 <form onSubmit={handleCredit}>
                   <DialogHeader>
@@ -315,6 +313,15 @@ export default function Account() {
                         </SelectContent>
                       </Select>
                     </Field>
+                    <Field>
+                      <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
+                      <Textarea
+                        id="textarea-message"
+                        value={description}
+                        placeholder={t('account.transactions.fields.description_placeholder')}
+                        onChange={(e) => setDescription(e.target.value)}
+                      />
+                    </Field>
                   </FieldGroup>
                   <DialogFooter>
                     <DialogClose asChild>
@@ -325,7 +332,7 @@ export default function Account() {
                 </form>
               </DialogContent>
             </Dialog>
-            <Dialog open={showDebitDialog} onOpenChange={setShowDebitDialog}>
+            <Dialog open={showDebitDialog} onOpenChange={(open) => {handleOpenChange(setShowDebitDialog, open)}}>
               <DialogContent className="sm:max-w-[425px]">
                 <form onSubmit={handleDebit}>
                   <DialogHeader>
@@ -370,6 +377,15 @@ export default function Account() {
                         </SelectContent>
                       </Select>
                     </Field>
+                    <Field>
+                      <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
+                      <Textarea
+                        id="textarea-message"
+                        value={description}
+                        placeholder={t('account.transactions.fields.description_placeholder')}
+                        onChange={(e) => setDescription(e.target.value)}
+                      />
+                    </Field>
                   </FieldGroup>
                   <DialogFooter>
                     <DialogClose asChild>
@@ -380,7 +396,7 @@ export default function Account() {
                 </form>
               </DialogContent>
             </Dialog>
-            <Dialog open={showTransactionDialog} onOpenChange={setShowTransactionDialog}>
+            <Dialog open={showTransactionDialog} onOpenChange={(open) => {handleOpenChange(setShowTransactionDialog, open)}}>
               <DialogContent className="sm:max-w-[425px]">
                 <form onSubmit={handleOver}>
                   <DialogHeader>
@@ -442,6 +458,15 @@ export default function Account() {
                         </SelectContent>
                       </Select>
                     </Field>
+                    <Field>
+                      <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
+                      <Textarea
+                        id="textarea-message"
+                        value={description}
+                        placeholder={t('account.transactions.fields.description_placeholder')}
+                        onChange={(e) => setDescription(e.target.value)}
+                      />
+                    </Field>
                   </FieldGroup>
                   <DialogFooter>
                     <DialogClose asChild>
@@ -485,7 +510,7 @@ export default function Account() {
           </div>
 
           {transactionsData.results.length > 0 ? (
-            <TransactionList transactions={transactionsData.results} />
+            <TransactionList transactions={transactionsData.results} setTransactions={setTransactionsData} updateAccount={updateAccount} />
           ) : (
             <Card className="border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
               <div className="p-12 text-center text-muted-foreground italic">

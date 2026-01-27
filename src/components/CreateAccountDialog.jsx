@@ -13,8 +13,17 @@ export function CreateAccountDialog({ open, onOpenChange, onCreated }) {
     const { user } = useAuth();
 
     const [label, setLabel] = useState("");
-    const [balance, setBalance] = useState("0.00");
+    const [balance, setBalance] = useState("0");
     const [loading, setLoading] = useState(false);
+
+    const close = (open) => {
+        if (!open) {
+            onOpenChange(false);
+            setLabel("");
+            setBalance("0");
+            setLoading(false);
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,7 +39,7 @@ export function CreateAccountDialog({ open, onOpenChange, onCreated }) {
                 balance: parseFloat(balance) * 100,
             });
             onCreated(response);
-            onOpenChange(false);
+            close(false);
 
             setLabel("");
             setBalance("0.00");
@@ -45,7 +54,7 @@ export function CreateAccountDialog({ open, onOpenChange, onCreated }) {
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={close}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t('account.dialog.title')}</DialogTitle>

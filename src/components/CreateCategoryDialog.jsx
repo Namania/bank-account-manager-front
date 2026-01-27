@@ -12,6 +12,14 @@ export function CreateCategoryDialog({ open, onOpenChange, onCreated }) {
     const [color, setColor] = useState("#ffffff");
     const [loading, setLoading] = useState(false);
 
+    const close = (open) => {
+        if (!open) {
+            onOpenChange(false);
+            setLabel("");
+            setColor("#ffffff");
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -19,7 +27,7 @@ export function CreateCategoryDialog({ open, onOpenChange, onCreated }) {
             const API_URL = import.meta.env.VITE_API_URL;
             const response = await axios.post(`${API_URL}/categories/`, { label, color });
             onCreated(response.data);
-            onOpenChange(false);
+            close(false);
             setLabel("");
         } catch (error) {
             console.error("Erreur creation:", error);
@@ -29,7 +37,7 @@ export function CreateCategoryDialog({ open, onOpenChange, onCreated }) {
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={close}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{ t('category.dialog.title') }</DialogTitle>

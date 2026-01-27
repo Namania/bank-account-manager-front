@@ -82,15 +82,6 @@ export default function Accounts() {
               </div>
               <Wallet className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
-            {/* <CardContent>
-              <Badge variant={account.balance >= 0 ? "secondary" : "destructive"} className="ml-2">
-                {account.balance >= 0 ? <ArrowUpRight className="mr-1 h-3 w-3" /> : <ArrowDownRight className="mr-1 h-3 w-3" />}
-                2.5%
-              </Badge>
-              <p className="text-xs text-muted-foreground mt-2">
-                Dernière transaction : il y a 2 heures
-              </p>
-            </CardContent> */}
             <CardFooter className="mt-auto pt-0">
               {
                 account.balance >= 0 ?

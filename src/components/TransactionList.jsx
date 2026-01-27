@@ -6,13 +6,61 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { deleteTransaction } from "@/api/transaction";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { Edit, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
+import { useState } from "react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog";
 
-export default function TransactionList({ transactions }) {
+export default function TransactionList({ transactions, setTransactions, updateAccount = null }) {
     const { t } = useTranslation();
+    const [current, setCurrent] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const confirmDelete = async () => {
+        if (!current) return;
+        try {
+            await deleteTransaction(current.id);
+            const tmp = transactions.filter((tx) => tx.id !== current.id);
+            setTransactions({
+                results: tmp,
+                count: tmp.length
+            });
+            if (updateAccount) {
+                updateAccount();
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(t('core.fetch_error'));
+        } finally {
+            setIsModalOpen(false);
+        }
+    };
+
     return (
         <div className="rounded-md border bg-card">
+            <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>{t('account.delete.title')}</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {t('account.delete.desc')}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>{t('core.cancel')}</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={confirmDelete}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                            {t('core.delete')}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -23,6 +71,7 @@ export default function TransactionList({ transactions }) {
                         <TableHead>{t('transaction.table.amount')}</TableHead>
                         <TableHead>{t('transaction.table.date')}</TableHead>
                         <TableHead>{t('transaction.table.description')}</TableHead>
+                        <TableHead></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -79,6 +128,24 @@ export default function TransactionList({ transactions }) {
                             </TableCell>
                             <TableCell className="max-w-[200px] truncate text-sm">
                                 {tx.comment || "-"}
+                            </TableCell>
+                            <TableCell className="text-end">
+                                <DropdownMenu modal={false}>
+                                    <DropdownMenuTrigger asChild>
+                                        <MoreHorizontalIcon className="hover:text-neutral-500" />
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-40" align="end">
+                                        <DropdownMenuItem onSelect={() => setShowTransactionDialog(true)} disabled>
+                                            <Edit /> {t('transaction.actions.edit')}
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onSelect={() => {
+                                            setCurrent(tx);
+                                            setIsModalOpen(true);
+                                        }} className="text-red-800">
+                                            <Trash2Icon className="text-red-500" /> {t('transaction.actions.delete')}
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </TableCell>
                         </TableRow>
                     ))}

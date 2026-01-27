@@ -23,3 +23,10 @@ export const createTransaction = async (data) => {
     const response = await axios.post(`${API_URL}/transactions/`, data);
     return response.data;
 }
+
+export const deleteTransaction = async (id) => {
+    const token = localStorage.getItem(`${LOCAL_KEY}.token`);
+    axios.defaults.headers.common["Authorization"] = `Token ${token}`;
+    const response = await axios.delete(`${API_URL}/transactions/${id}/`);
+    return response.data;
+}

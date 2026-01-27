@@ -110,6 +110,8 @@
         "amount": "Montant",
         "category": "Catégorie",
         "category_placeholder": "Sélectionnez une catégorie",
+        "description": "Description",
+        "description_placeholder": "Achat sur internet",
         "receiver": "Destinataire",
         "receiver_placeholder": "Sélectionnez un destinataire"
       }
@@ -162,6 +164,10 @@
       "id": "Id",
       "receiver": "Destinataire",
       "sender": "Expéditeur"
+    },
+    "actions": {
+      "delete": "Supprimer",
+      "edit": "Modifier"
     }
   }
 }

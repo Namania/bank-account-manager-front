@@ -47,7 +47,7 @@ export default function Transaction() {
                 {isLoading ? (
                     <TransactionTableSkeleton />
                 ) : (
-                    <TransactionList transactions={data.results} />
+                    <TransactionList transactions={data.results} setTransactions={setData} />
                 )}
             </div>
             <Pagination>
