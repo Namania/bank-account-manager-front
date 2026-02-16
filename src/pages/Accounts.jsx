@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { CreateAccountDialog } from "@/components/CreateAccountDialog";
 import { toast } from "sonner";
+import SlideXAnimation from "@/components/animation/SlideXAnimation";
 
 export default function Accounts() {
   const { t } = useTranslation();
@@ -36,17 +37,7 @@ export default function Accounts() {
     fetchAccounts();
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {[1, 2, 3].map((i) => (
-          <Skeleton key={i} className="h-[120px] w-full rounded-xl" />
-        ))}
-      </div>
-    );
-  }
-
-  return (
+  return isLoading ? (<></>) : (
     <>
       <CreateAccountDialog
         open={isModalOpen}
@@ -61,37 +52,39 @@ export default function Accounts() {
           </Button>
         </div>
         : <div className="grid gap-4 grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] items-stretch">
-          {accounts.map((account) => (
-            <Link 
-              key={account.id} 
-              to={`/account/${account.id}`}
-              className="group flex"
-            >
-              <Card className="flex flex-col h-full w-full transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:border-primary/50 cursor-pointer">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                  <div className="flex-none">
-                    <CardTitle className="font-bold">
-                      {account.label}
-                    </CardTitle>
-                    <CardDescription>
-                      {account.owners.length > 1 ? t('account.shared', {count: account.owners.length - 1}) : ''}
-                    </CardDescription>
-                  </div>
-                  <Wallet className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardFooter className="mt-auto pt-0">
-                  {
-                    account.balance >= 0 ?
-                      <Badge className={`text-1xl bg-emerald-500 text-forground`}>
-                        {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
-                      </Badge>
-                      : <Badge className={`text-1xl bg-red-800 text-forground`}>
-                        {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
-                      </Badge>
-                  }
-                </CardFooter>
-              </Card>
-            </Link>
+          {accounts.map((account, index) => (
+            <SlideXAnimation delay={.2 + .1 * index} key={index}>
+              <Link 
+                key={account.id} 
+                to={`/account/${account.id}`}
+                className="group flex"
+              >
+                <Card className="flex flex-col h-full w-full transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:border-primary/50 cursor-pointer">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                    <div className="flex-none">
+                      <CardTitle className="font-bold">
+                        {account.label}
+                      </CardTitle>
+                      <CardDescription>
+                        {account.owners.length > 1 ? t('account.shared', {count: account.owners.length - 1}) : ''}
+                      </CardDescription>
+                    </div>
+                    <Wallet className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardFooter className="mt-auto pt-0">
+                    {
+                      account.balance >= 0 ?
+                        <Badge className={`text-1xl bg-emerald-500 text-forground`}>
+                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
+                        </Badge>
+                        : <Badge className={`text-1xl bg-red-800 text-forground`}>
+                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
+                        </Badge>
+                    }
+                  </CardFooter>
+                </Card>
+              </Link>
+            </SlideXAnimation>
           ))}
         </div>
       }

@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import { PlusIcon, Trash2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import SlideYAnimation from "./animation/SlideYAnimation";
 
 export default function Layout() {
   const { t } = useTranslation();
@@ -58,10 +59,14 @@ export default function Layout() {
       <main className="flex-1 p-2 flex flex-col min-h-screen">
         <Header breadcrumb={ <DynamicBreadcrumb items={breadcrumbItems} /> } >
           {
-            path !== "/transaction" ? <Button variant={current.variant} onClick={() => setIsModalOpen(true)}>
-              {current.icon}
-              { t(current.langKey) }
-            </Button> : null
+            path !== "/transaction"
+              ? <SlideYAnimation>
+                <Button variant={current.variant} onClick={() => setIsModalOpen(true)}>
+                  {current.icon}
+                  { t(current.langKey) }
+                </Button>
+              </SlideYAnimation>
+              : null
           }
         </Header>
         <div className="p-2 flex-1">
