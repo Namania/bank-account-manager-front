@@ -46,56 +46,55 @@ export default function Accounts() {
     );
   }
 
-  if (accounts.length === 0) {
-    return (
-      <div className="h-full flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
-        <p className="text-muted-foreground mb-4">{t('account.empty')}</p>
-        <Button>
-          <PlusIcon className="mr-2 h-4 w-4" /> {t('account.first')}
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <div className="grid gap-4 grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] items-stretch">
+    <>
       <CreateAccountDialog
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
         onCreated={handleCreated}
       />
-      {accounts.map((account) => (
-        <Link 
-          key={account.id} 
-          to={`/account/${account.id}`}
-          className="group flex"
-        >
-          <Card className="flex flex-col h-full w-full transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:border-primary/50 cursor-pointer">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-              <div className="flex-none">
-                <CardTitle className="font-bold">
-                  {account.label}
-                </CardTitle>
-                <CardDescription>
-                  {account.owners.length > 1 ? t('account.shared', {count: account.owners.length - 1}) : ''}
-                </CardDescription>
-              </div>
-              <Wallet className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardFooter className="mt-auto pt-0">
-              {
-                account.balance >= 0 ?
-                  <Badge className={`text-1xl bg-emerald-500 text-forground`}>
-                    {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
-                  </Badge>
-                  : <Badge className={`text-1xl bg-red-800 text-forground`}>
-                    {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
-                  </Badge>
-              }
-            </CardFooter>
-          </Card>
-        </Link>
-      ))}
-    </div>
+      {accounts.length === 0
+        ? <div className="h-full flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
+          <p className="text-muted-foreground mb-4">{t('account.empty')}</p>
+          <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+            <PlusIcon className="mr-2 h-4 w-4" /> {t('account.first')}
+          </Button>
+        </div>
+        : <div className="grid gap-4 grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] items-stretch">
+          {accounts.map((account) => (
+            <Link 
+              key={account.id} 
+              to={`/account/${account.id}`}
+              className="group flex"
+            >
+              <Card className="flex flex-col h-full w-full transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:border-primary/50 cursor-pointer">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                  <div className="flex-none">
+                    <CardTitle className="font-bold">
+                      {account.label}
+                    </CardTitle>
+                    <CardDescription>
+                      {account.owners.length > 1 ? t('account.shared', {count: account.owners.length - 1}) : ''}
+                    </CardDescription>
+                  </div>
+                  <Wallet className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardFooter className="mt-auto pt-0">
+                  {
+                    account.balance >= 0 ?
+                      <Badge className={`text-1xl bg-emerald-500 text-forground`}>
+                        {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
+                      </Badge>
+                      : <Badge className={`text-1xl bg-red-800 text-forground`}>
+                        {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
+                      </Badge>
+                  }
+                </CardFooter>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      }
+    </>
   );
 }
