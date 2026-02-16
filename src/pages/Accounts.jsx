@@ -53,11 +53,11 @@ export default function Accounts() {
         </div>
         : <div className="grid gap-4 grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] items-stretch">
           {accounts.map((account, index) => (
-            <SlideXAnimation delay={.2 + .1 * index} key={index}>
+            <SlideXAnimation delay={.2 + .1 * index} key={index} className="flex">
               <Link 
                 key={account.id} 
                 to={`/account/${account.id}`}
-                className="group flex"
+                className="group flex w-full"
               >
                 <Card className="flex flex-col h-full w-full transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:border-primary/50 cursor-pointer">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
