@@ -1,34 +1,50 @@
+import { useMemo } from "react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { useTranslation } from "react-i18next";
 
-export const prepareChartData = (transactions) => {
-  return transactions
-    .map(t => ({
-      date: new Date(t.create_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
-      timestamp: new Date(t.create_at).getTime(),
-      amount: parseFloat(import.meta.env.VITE_BANK_ID === t.receiver ? -t.amount : t.amount)
-    }))
-    .sort((a, b) => a.timestamp - b.timestamp)
-    .reduce((acc, curr, index) => {
-      const prevBalance = index > 0 ? acc[index - 1].balance : 0;
-      acc.push({
-        ...curr,
-        balance: prevBalance + curr.amount
-      });
-      return acc;
-    }, []);
+export const prepareChartData = (pk, balance, transactions) => {
+    const sorted = [...transactions].sort((a, b) => 
+        new Date(a.create_at).getTime() - new Date(b.create_at).getTime()
+    );
+
+    const data = [];
+    let currentRunningBalance = parseFloat(balance) / 100;
+
+    for (let i = sorted.length - 1; i >= 0; i--) {
+        const t = sorted[i];
+        const dateObj = new Date(t.create_at);
+
+        data.unshift({
+            id: t.pk,
+            fullDate: dateObj.toLocaleString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }),
+            date: dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
+            balance: currentRunningBalance,
+        });
+
+        const tAmount = parseFloat(t.amount);
+        const isSentByMe = pk === t.sender;
+
+        currentRunningBalance = isSentByMe ? currentRunningBalance + tAmount : currentRunningBalance - tAmount;
+    }
+
+    return data;
 };
 
-export function TransactionChart({ transactions }) {
+export function TransactionChart({ pk, balance, transactions }) {
     const { t } = useTranslation();
-    const chartData = prepareChartData(transactions);
+
+    const chartData = useMemo(() => prepareChartData(pk, balance, transactions), [pk, balance, transactions]);
 
     const chartConfig = {
         balance: {
             label: "Solde",
             color: "hsl(var(--primary))",
+        },
+        fullDate: {
+            label: "Date",
+            color: "hsl(var(--muted-foreground))",
         },
     };
 
@@ -43,13 +59,31 @@ export function TransactionChart({ transactions }) {
                     <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
                         <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-muted" />
                         <XAxis
-                            dataKey="date"
+                            dataKey="id"
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
+                            ticks={[chartData[0]?.date, chartData[chartData.length - 1]?.date]}
+                            interval="preserveStartEnd"
                             className="text-xs"
                         />
-                        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                        <ChartTooltip
+                            cursor={false}
+                            content={({ payload }) => {
+                                if (!payload || payload.length === 0) return null;
+                                const data = payload[0].payload;
+                                return (
+                                    <div className="rounded-lg border bg-background p-2 shadow-sm">
+                                        <div className="grid grid-cols-2 gap-2">
+                                        <span className="font-bold">Solde</span>
+                                        <span className="font-bold text-right">{data.balance.toFixed(2)} €</span>
+                                        <span className="text-muted-foreground">Date</span>
+                                        <span className="font-medium text-muted-foreground text-right text-xs">{data.fullDate}</span>
+                                        </div>
+                                    </div>
+                                );
+                            }}
+                        />
                         <Line
                             type="monotone"
                             dataKey="balance"

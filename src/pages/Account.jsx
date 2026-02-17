@@ -21,6 +21,9 @@ import { getCategories } from "@/api/category";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionChart } from "@/components/TransactionChart";
 import { Textarea } from "@/components/ui/textarea";
+import SlideYAnimation from "@/components/animation/SlideYAnimation";
+import FadeAnimation from "@/components/animation/FadeAnimation";
+import SlideXAnimation from "@/components/animation/SlideXAnimation";
 
 export default function Account() {
   const { id } = useParams();
@@ -232,342 +235,360 @@ export default function Account() {
       </AlertDialog>
 
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-2xl font-bold tracking-tight">{t('account.info.title')}</h3>
+        <SlideYAnimation delay={.2} className="text-2xl font-bold tracking-tight">{t('account.info.title')}</SlideYAnimation>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="border-muted bg-muted/0 shadow-lg overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="p-2 rounded-lg bg-emerald-500/10">
-                <User className="text-emerald-500 h-10 w-10" />
+        <SlideXAnimation delay={.2} className="flex">
+          <Card className="w-full border-muted bg-muted/0 shadow-lg overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <SlideXAnimation delay={.4} className="p-2 rounded-lg bg-emerald-500/10">
+                  <User className="text-emerald-500 h-10 w-10" />
+                </SlideXAnimation>
+                <div className="flex flex-col gap-1">
+                  <FadeAnimation delay={.5}>
+                    <Label className="text-lg font-bold">
+                      {account.label}
+                    </Label>
+                  </FadeAnimation>
+                  <SlideYAnimation reverse delay={.3}>
+                    <Badge variant={account.owners.length > 1 ? 'secondary' : 'outlined'} className={account.owners.length > 1 ? 'bg-blue-500 dark:bg-blue-600' : ''}>
+                      {account.owners.length > 1 ? t('account.info.shared') : t('account.info.personal')}
+                    </Badge>
+                  </SlideYAnimation>
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <Label className="text-lg font-bold">
-                  {account.label}
-                </Label>
-                <Badge variant={account.owners.length > 1 ? 'secondary' : 'outlined'} className={account.owners.length > 1 ? 'bg-blue-500 dark:bg-blue-600' : ''}>
-                  {account.owners.length > 1 ? t('account.info.shared') : t('account.info.personal')}
-                </Badge>
-              </div>
-            </div>
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" aria-label="Open menu" size="icon-sm">
-                  <MoreHorizontalIcon />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-40" align="end">
-                <DropdownMenuItem onSelect={() => setShowCreditDialog(true)}>
-                  <PlusIcon /> {t('account.info.actions.credit')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => setShowTransactionDialog(true)}>
-                  <LucideGitCompareArrows /> {t('account.info.actions.over_account')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => setShowDebitDialog(true)}>
-                  <MinusIcon /> {t('account.info.actions.debit')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Dialog open={showCreditDialog} onOpenChange={(open) => {handleOpenChange(setShowCreditDialog, open)}}>
-              <DialogContent className="sm:max-w-[425px]">
-                <form onSubmit={handleCredit}>
-                  <DialogHeader>
-                    <DialogTitle>{t('account.transactions.credit')}</DialogTitle>
-                    <DialogDescription>
-                      {t('account.transactions.desc')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <FieldGroup className="py-3">
-                    <Field>
-                      <FieldLabel>{t('account.transactions.fields.amount')}</FieldLabel>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                          <span className="text-muted-foreground sm:text-sm">€</span>
+              <SlideXAnimation reverse delay={.5}>
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" aria-label="Open menu" size="icon-sm">
+                      <MoreHorizontalIcon />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-40" align="end">
+                    <DropdownMenuItem onSelect={() => setShowCreditDialog(true)}>
+                      <PlusIcon /> {t('account.info.actions.credit')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setShowTransactionDialog(true)}>
+                      <LucideGitCompareArrows /> {t('account.info.actions.over_account')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setShowDebitDialog(true)}>
+                      <MinusIcon /> {t('account.info.actions.debit')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SlideXAnimation>
+              <Dialog open={showCreditDialog} onOpenChange={(open) => {handleOpenChange(setShowCreditDialog, open)}}>
+                <DialogContent className="sm:max-w-[425px]">
+                  <form onSubmit={handleCredit}>
+                    <DialogHeader>
+                      <DialogTitle>{t('account.transactions.credit')}</DialogTitle>
+                      <DialogDescription>
+                        {t('account.transactions.desc')}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <FieldGroup className="py-3">
+                      <Field>
+                        <FieldLabel>{t('account.transactions.fields.amount')}</FieldLabel>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <span className="text-muted-foreground sm:text-sm">€</span>
+                          </div>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder="0.00"
+                            onChange={(e) => setAmount(e.target.value)}
+                            className="pl-7"
+                            onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                            required
+                          />
                         </div>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          placeholder="0.00"
-                          onChange={(e) => setAmount(e.target.value)}
-                          className="pl-7"
-                          onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                      </Field>
+                      <Field>
+                        <FieldLabel>{t('account.transactions.fields.category')}</FieldLabel>
+                        <Select
+                          value={selectedCategory}
+                          onValueChange={setSelectedCategory}
                           required
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('account.transactions.fields.category_placeholder')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id.toString()}>{cat.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                      <Field>
+                        <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
+                        <Textarea
+                          id="textarea-message"
+                          value={description}
+                          placeholder={t('account.transactions.fields.description_placeholder')}
+                          onChange={(e) => setDescription(e.target.value)}
                         />
-                      </div>
-                    </Field>
-                    <Field>
-                      <FieldLabel>{t('account.transactions.fields.category')}</FieldLabel>
-                      <Select
-                        value={selectedCategory}
-                        onValueChange={setSelectedCategory}
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={t('account.transactions.fields.category_placeholder')} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categories.map((cat) => (
-                            <SelectItem key={cat.id} value={cat.id.toString()}>{cat.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
-                      <Textarea
-                        id="textarea-message"
-                        value={description}
-                        placeholder={t('account.transactions.fields.description_placeholder')}
-                        onChange={(e) => setDescription(e.target.value)}
-                      />
-                    </Field>
-                  </FieldGroup>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">{t('core.cancel')}</Button>
-                    </DialogClose>
-                    <Button type="submit">{t('core.create')}</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
-            <Dialog open={showDebitDialog} onOpenChange={(open) => {handleOpenChange(setShowDebitDialog, open)}}>
-              <DialogContent className="sm:max-w-[425px]">
-                <form onSubmit={handleDebit}>
-                  <DialogHeader>
-                    <DialogTitle>{t('account.transactions.debit')}</DialogTitle>
-                    <DialogDescription>
-                      {t('account.transactions.desc')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <FieldGroup className="py-3">
-                    <Field>
-                      <FieldLabel>{t('account.transactions.fields.amount')}</FieldLabel>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                          <span className="text-muted-foreground sm:text-sm">€</span>
+                      </Field>
+                    </FieldGroup>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">{t('core.cancel')}</Button>
+                      </DialogClose>
+                      <Button type="submit">{t('core.create')}</Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+              <Dialog open={showDebitDialog} onOpenChange={(open) => {handleOpenChange(setShowDebitDialog, open)}}>
+                <DialogContent className="sm:max-w-[425px]">
+                  <form onSubmit={handleDebit}>
+                    <DialogHeader>
+                      <DialogTitle>{t('account.transactions.debit')}</DialogTitle>
+                      <DialogDescription>
+                        {t('account.transactions.desc')}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <FieldGroup className="py-3">
+                      <Field>
+                        <FieldLabel>{t('account.transactions.fields.amount')}</FieldLabel>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <span className="text-muted-foreground sm:text-sm">€</span>
+                          </div>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder="0.00"
+                            onChange={(e) => setAmount(e.target.value)}
+                            className="pl-7"
+                            onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                            required
+                          />
                         </div>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          placeholder="0.00"
-                          onChange={(e) => setAmount(e.target.value)}
-                          className="pl-7"
-                          onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                      </Field>
+                      <Field>
+                        <FieldLabel>{t('account.transactions.fields.category')}</FieldLabel>
+                        <Select
+                          value={selectedCategory}
+                          onValueChange={setSelectedCategory}
                           required
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('account.transactions.fields.category_placeholder')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id.toString()}>{cat.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                      <Field>
+                        <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
+                        <Textarea
+                          id="textarea-message"
+                          value={description}
+                          placeholder={t('account.transactions.fields.description_placeholder')}
+                          onChange={(e) => setDescription(e.target.value)}
                         />
-                      </div>
-                    </Field>
-                    <Field>
-                      <FieldLabel>{t('account.transactions.fields.category')}</FieldLabel>
-                      <Select
-                        value={selectedCategory}
-                        onValueChange={setSelectedCategory}
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={t('account.transactions.fields.category_placeholder')} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categories.map((cat) => (
-                            <SelectItem key={cat.id} value={cat.id.toString()}>{cat.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
-                      <Textarea
-                        id="textarea-message"
-                        value={description}
-                        placeholder={t('account.transactions.fields.description_placeholder')}
-                        onChange={(e) => setDescription(e.target.value)}
-                      />
-                    </Field>
-                  </FieldGroup>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">{t('core.cancel')}</Button>
-                    </DialogClose>
-                    <Button type="submit">{t('core.create')}</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
-            <Dialog open={showTransactionDialog} onOpenChange={(open) => {handleOpenChange(setShowTransactionDialog, open)}}>
-              <DialogContent className="sm:max-w-[425px]">
-                <form onSubmit={handleOver}>
-                  <DialogHeader>
-                    <DialogTitle>{t('account.transactions.over_account')}</DialogTitle>
-                    <DialogDescription>
-                      {t('account.transactions.desc')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <FieldGroup className="py-3">
-                    <Field>
-                      <FieldLabel>{t('account.transactions.fields.receiver')}</FieldLabel>
-                      <Select
-                        value={selectedReceiver}
-                        onValueChange={setSelectedReceiver}
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={t('account.transactions.fields.receiver_placeholder')} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {accounts.filter((acc) => acc.id != account.id).map((acc) => (
-                            <SelectItem key={acc.id} value={acc.id.toString()}>{acc.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                    <Field>
-                      <FieldLabel>{t('account.transactions.fields.amount')}</FieldLabel>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                          <span className="text-muted-foreground sm:text-sm">€</span>
+                      </Field>
+                    </FieldGroup>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">{t('core.cancel')}</Button>
+                      </DialogClose>
+                      <Button type="submit">{t('core.create')}</Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+              <Dialog open={showTransactionDialog} onOpenChange={(open) => {handleOpenChange(setShowTransactionDialog, open)}}>
+                <DialogContent className="sm:max-w-[425px]">
+                  <form onSubmit={handleOver}>
+                    <DialogHeader>
+                      <DialogTitle>{t('account.transactions.over_account')}</DialogTitle>
+                      <DialogDescription>
+                        {t('account.transactions.desc')}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <FieldGroup className="py-3">
+                      <Field>
+                        <FieldLabel>{t('account.transactions.fields.receiver')}</FieldLabel>
+                        <Select
+                          value={selectedReceiver}
+                          onValueChange={setSelectedReceiver}
+                          required
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('account.transactions.fields.receiver_placeholder')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {accounts.filter((acc) => acc.id != account.id).map((acc) => (
+                              <SelectItem key={acc.id} value={acc.id.toString()}>{acc.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                      <Field>
+                        <FieldLabel>{t('account.transactions.fields.amount')}</FieldLabel>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <span className="text-muted-foreground sm:text-sm">€</span>
+                          </div>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder="0.00"
+                            onChange={(e) => setAmount(e.target.value)}
+                            className="pl-7"
+                            onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                            required
+                          />
                         </div>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          placeholder="0.00"
-                          onChange={(e) => setAmount(e.target.value)}
-                          className="pl-7"
-                          onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+                      </Field>
+                      <Field>
+                        <FieldLabel>{t('account.transactions.fields.category')}</FieldLabel>
+                        <Select
+                          value={selectedCategory}
+                          onValueChange={setSelectedCategory}
                           required
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={t('account.transactions.fields.category_placeholder')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id.toString()}>{cat.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </Field>
+                      <Field>
+                        <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
+                        <Textarea
+                          id="textarea-message"
+                          value={description}
+                          placeholder={t('account.transactions.fields.description_placeholder')}
+                          onChange={(e) => setDescription(e.target.value)}
                         />
-                      </div>
-                    </Field>
-                    <Field>
-                      <FieldLabel>{t('account.transactions.fields.category')}</FieldLabel>
-                      <Select
-                        value={selectedCategory}
-                        onValueChange={setSelectedCategory}
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={t('account.transactions.fields.category_placeholder')} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categories.map((cat) => (
-                            <SelectItem key={cat.id} value={cat.id.toString()}>{cat.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                    <Field>
-                      <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
-                      <Textarea
-                        id="textarea-message"
-                        value={description}
-                        placeholder={t('account.transactions.fields.description_placeholder')}
-                        onChange={(e) => setDescription(e.target.value)}
-                      />
-                    </Field>
-                  </FieldGroup>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">{t('core.cancel')}</Button>
-                    </DialogClose>
-                    <Button type="submit">{t('core.create')}</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
-          </CardHeader>
-          <CardContent>
-            <div className="mt-4">
-              <p className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">{t('account.info.balance')}</p>
-              <div className={`text-3xl font-black ${account.balance >= 0 ? 'text-emerald-500' : 'text-red-800'}`}>
-                {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
+                      </Field>
+                    </FieldGroup>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">{t('core.cancel')}</Button>
+                      </DialogClose>
+                      <Button type="submit">{t('core.create')}</Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent>
+              <div className="mt-4">
+                <FadeAnimation delay={.8} className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">{t('account.info.balance')}</FadeAnimation>
+                <FadeAnimation delay={1} className={`text-3xl font-black ${account.balance >= 0 ? 'text-emerald-500' : 'text-red-800'}`}>
+                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
+                </FadeAnimation>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-2 border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
-          {transactionsData.results.length > 0 ?
-            <TransactionChart transactions={transactionsData.results} />
-            : <div className="flex flex-col items-center text-center space-y-3">
-              <div className="p-3 bg-muted rounded-full">
-                <Wallet className="h-6 w-6 text-muted-foreground/50" />
+            </CardContent>
+          </Card>
+        </SlideXAnimation>
+        
+        <FadeAnimation delay={.3} className="lg:col-span-2">
+          <Card className="border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
+            {transactionsData.results.length > 0 ?
+              <TransactionChart pk={account.id} balance={account.balance} transactions={transactionsData.results} />
+              : <div className="flex flex-col items-center text-center space-y-3">
+                <div className="p-3 bg-muted rounded-full">
+                  <Wallet className="h-6 w-6 text-muted-foreground/50" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">{t('account.chart.empty_title')}</p>
+                  <p className="text-xs text-muted-foreground/60">{t('account.chart.empty_desc')}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">{t('account.chart.empty_title')}</p>
-                <p className="text-xs text-muted-foreground/60">{t('account.chart.empty_desc')}</p>
-              </div>
-            </div>
-          }
-        </Card>
+            }
+          </Card>
+        </FadeAnimation>
 
         <div className="lg:col-span-3 pt-4 space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold tracking-tight">{t('account.transactions.recent')}</h3>
-            <Badge variant="outline">{transactionsData.count} transactions</Badge>
+            <SlideYAnimation delay={.3} className="text-2xl font-bold tracking-tight">{t('account.transactions.recent')}</SlideYAnimation>
+            <FadeAnimation delay={.6}>
+              <Badge variant="outline">{transactionsData.count} transactions</Badge>
+            </FadeAnimation>
           </div>
 
           {transactionsData.results.length > 0 ? (
-            <TransactionList transactions={transactionsData.results} setTransactions={setTransactionsData} updateAccount={updateAccount} />
+            <FadeAnimation delay={.8}>
+              <TransactionList transactions={transactionsData.results} setTransactions={setTransactionsData} updateAccount={updateAccount} />
+            </FadeAnimation>
           ) : (
-            <Card className="border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
-              <div className="p-12 text-center text-muted-foreground italic">
-                {t('account.transactions.empty')}
-              </div>
-            </Card>
+            <FadeAnimation delay={.8}>
+              <Card className="border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
+                <div className="p-12 text-center text-muted-foreground italic">
+                  {t('account.transactions.empty')}
+                </div>
+              </Card>
+            </FadeAnimation>
           )}
 
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) setCurrentPage(currentPage - 1);
-                  }}
-                  className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                />
-              </PaginationItem>
+          <SlideYAnimation reverse delay={1}>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
 
-              {[...Array(totalPages)].map((_, i) => {
-                const pageNum = i + 1;
-                if (pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)) {
-                  return (
-                    <PaginationItem key={pageNum}>
-                      <PaginationLink
-                        href="#"
-                        isActive={currentPage === pageNum}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCurrentPage(pageNum);
-                        }}
-                      >
-                        {pageNum}
-                      </PaginationLink>
-                    </PaginationItem>
-                  );
-                }
-                if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
-                  return <PaginationEllipsis key={pageNum} />;
-                }
-                return null;
-              })}
+                {[...Array(totalPages)].map((_, i) => {
+                  const pageNum = i + 1;
+                  if (pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)) {
+                    return (
+                      <PaginationItem key={pageNum}>
+                        <PaginationLink
+                          href="#"
+                          isActive={currentPage === pageNum}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentPage(pageNum);
+                          }}
+                        >
+                          {pageNum}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  }
+                  if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
+                    return <PaginationEllipsis key={pageNum} />;
+                  }
+                  return null;
+                })}
 
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-                  }}
-                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                    }}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </SlideYAnimation>
         </div>
 
       </div>
