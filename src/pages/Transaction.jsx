@@ -27,14 +27,11 @@ export default function Transaction() {
 
     useEffect(() => {
         const fetchTransactions = async () => {
-        setIsLoading(true);
             try {
                 const responseData = await getTransactions(currentPage);
                 setData(responseData);
             } catch (error) {
                 toast.error(t('core.fetch_error'));
-            } finally {
-                setIsLoading(false);
             }
         };
 

@@ -3,13 +3,13 @@ import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/comp
 import { Link, useOutletContext } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAccounts } from "@/api/account";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { CreateAccountDialog } from "@/components/CreateAccountDialog";
 import { toast } from "sonner";
 import SlideXAnimation from "@/components/animation/SlideXAnimation";
+import FadeAnimation from "@/components/animation/FadeAnimation";
 
 export default function Accounts() {
   const { t } = useTranslation();
@@ -45,12 +45,12 @@ export default function Accounts() {
         onCreated={handleCreated}
       />
       {accounts.length === 0
-        ? <div className="h-full flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
+        ? <FadeAnimation delay={.3} className="h-full flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
           <p className="text-muted-foreground mb-4">{t('account.empty')}</p>
           <Button variant="outline" onClick={() => setIsModalOpen(true)}>
             <PlusIcon className="mr-2 h-4 w-4" /> {t('account.first')}
           </Button>
-        </div>
+        </FadeAnimation>
         : <div className="grid gap-4 grid-cols-2 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] items-stretch">
           {accounts.map((account, index) => (
             <SlideXAnimation delay={.2 + .1 * index} key={index} className="flex">

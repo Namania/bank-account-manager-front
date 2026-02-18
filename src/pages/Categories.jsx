@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { EditCategoryDialog } from "@/components/EditCategoryDialog";
 import SlideXAnimation from "@/components/animation/SlideXAnimation";
+import FadeAnimation from "@/components/animation/FadeAnimation";
 
 export default function Category() {
     const { t } = useTranslation();
@@ -105,13 +106,13 @@ export default function Category() {
                 onUpdated={handleUpdated} 
             />
             {categories.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
+                <FadeAnimation delay={.3} className="h-full flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
                     <Tag className="h-10 w-10 text-muted-foreground mb-4 opacity-20" />
                     <p className="text-muted-foreground">{t('category.empty')}</p>
                     <Button variant="outline" className="mt-4" onClick={() => setIsModalOpen(true)}>
                         <Plus className="mr-2 h-4 w-4" /> {t('category.first')}
                     </Button>
-                </div>
+                </FadeAnimation>
             ) : (
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))]">
                     {categories.map((category, index) => (
