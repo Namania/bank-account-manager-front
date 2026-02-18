@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import Cookies from "js-cookie";
 import { getToken } from "./getToken";
 import { getUser } from "./getUser";
-import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -12,20 +12,15 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      const token = localStorage.getItem(`${LOCAL_KEY}.token`);
+      const token = Cookies.get(`${LOCAL_KEY}_access`);
       
       if (token) {
-        axios.defaults.headers.common["Authorization"] = `Token ${token}`;
         try {
           const response = await getUser();
           const userData = response.results ? response.results[0] : response[0];
           setUser(userData);
         } catch (error) {
-          console.error("Échec du refresh auth:", error);
-          if (error.response?.status === 401 || error.response?.status === 403) {
-            localStorage.removeItem(`${LOCAL_KEY}.token`);
-            setUser(null);
-          }
+          setUser(null);
         }
       }
       setLoading(false);
@@ -44,7 +39,8 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem(`${LOCAL_KEY}.token`);
+    Cookies.remove(`${LOCAL_KEY}_access`);
+    Cookies.remove(`${LOCAL_KEY}_refresh`);
     setUser(null);
     window.location.href = "/auth/login";
   };
