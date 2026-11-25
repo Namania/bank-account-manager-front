@@ -4,6 +4,8 @@ import { getTransactions } from "@/api/transaction";
 import { getAccounts, getBankAccount } from "@/api/account";
 import { getCategories } from "@/api/category";
 import { useTranslation } from "react-i18next";
+import { useOutletContext } from "react-router-dom";
+import TransactionDialog from "@/components/TransactionDialog";
 import TransactionList from "@/components/TransactionList";
 import TransactionFilters from "@/components/TransactionFilters";
 import { EMPTY_FILTERS, hasFilters } from "@/lib/filters";
@@ -16,10 +18,14 @@ const PAGE_SIZE = 100;
 
 export default function Transaction() {
     const { t } = useTranslation();
+    // Opened by the header button.
+    const { isModalOpen, setIsModalOpen } = useOutletContext();
 
     const [data, setData] = useState({ count: 0, results: [] });
     const [currentPage, setCurrentPage] = useState(1);
     const [filters, setFilters] = useState(EMPTY_FILTERS);
+    // Bumped after a creation, to read the list again with its filters and order.
+    const [version, setVersion] = useState(0);
     // What the filters and the edit dialog offer: accounts, the bank and categories.
     const [references, setReferences] = useState({ accounts: [], bank: null, categories: [] });
 
@@ -36,7 +42,7 @@ export default function Transaction() {
             .then((responseData) => { if (!ignore) setData(responseData); })
             .catch(() => { if (!ignore) toast.error(t('core.fetch_error')); });
         return () => { ignore = true; };
-    }, [currentPage, filters, t]);
+    }, [currentPage, filters, version, t]);
 
     useEffect(() => {
         const fetchReferences = async () => {
@@ -53,6 +59,15 @@ export default function Transaction() {
 
     return (
         <div className="space-y-6 p-6">
+            <TransactionDialog
+                open={isModalOpen}
+                onOpenChange={setIsModalOpen}
+                mode="new"
+                accounts={references.accounts}
+                bank={references.bank}
+                categories={references.categories}
+                onSaved={() => { setCurrentPage(1); setVersion((current) => current + 1); }}
+            />
             <FadeAnimation delay={.4}>
                 <TransactionFilters
                     value={filters}

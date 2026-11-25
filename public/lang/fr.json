@@ -62,7 +62,8 @@
       "system": "Système"
     },
     "save": "Enregistrer",
-    "close": "Fermer"
+    "close": "Fermer",
+    "actions": "Actions"
   },
   "account": {
     "created": "Compte créé avec succès",
@@ -258,7 +259,8 @@
         "-created_at": "Saisie, récentes d'abord",
         "created_at": "Saisie, anciennes d'abord"
       }
-    }
+    },
+    "new_desc": "Choisissez les deux comptes, le montant et la date."
   },
   "profile": {
     "info": {
@@ -330,7 +332,6 @@
     "paused": "En pause",
     "pause": "Mettre en pause",
     "resume": "Reprendre",
-    "actions": "Actions",
     "delete": {
       "title": "Supprimer la récurrence ?",
       "desc": "Les transactions déjà créées sont conservées. Aucune nouvelle ne sera créée."

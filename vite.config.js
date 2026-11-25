@@ -17,6 +17,9 @@ export default defineConfig({
   server: {
     port: 8080,
   },
+  test: {
+    include: ["src/**/*.test.js", "tests/**/*.test.js"],
+  },
   esbuild: {
     drop: ["console", "debugger"],
   },

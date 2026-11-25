@@ -18,6 +18,12 @@ const TITLES = {
     debit: "account.transactions.debit",
     transfer: "account.transactions.over_account",
     edit: "transaction.edit.title",
+    new: "transaction.new",
+};
+
+const DESCRIPTIONS = {
+    edit: "transaction.edit.desc",
+    new: "transaction.new_desc",
 };
 
 const asId = (value) => (value == null ? "" : String(value));
@@ -27,12 +33,13 @@ const initialSides = ({ mode, account, bank, transaction }) => {
     if (mode === "edit") return { sender: asId(transaction.sender), receiver: asId(transaction.receiver) };
     if (mode === "credit") return { sender: asId(bank?.id), receiver: asId(account.id) };
     if (mode === "debit") return { sender: asId(account.id), receiver: asId(bank?.id) };
+    if (mode === "new") return { sender: "", receiver: "" };
     return { sender: asId(account.id), receiver: "" };
 };
 
 /**
- * One dialog for the four ways to write a transaction:
- * credit and debit (against the bank), transfer (to another account) and edit.
+ * One dialog for every way to write a transaction: credit and debit (against
+ * the bank), transfer (to another account), edit, and "new" (both sides free).
  */
 export default function TransactionDialog({ open, onOpenChange, mode, ...props }) {
     const { t } = useTranslation();
@@ -43,7 +50,7 @@ export default function TransactionDialog({ open, onOpenChange, mode, ...props }
                 <DialogHeader>
                     <DialogTitle>{t(TITLES[mode] ?? TITLES.transfer)}</DialogTitle>
                     <DialogDescription>
-                        {t(mode === "edit" ? "transaction.edit.desc" : "account.transactions.desc")}
+                        {t(DESCRIPTIONS[mode] ?? "account.transactions.desc")}
                     </DialogDescription>
                 </DialogHeader>
                 {/* Mounted only while open: the form starts from fresh values each time. */}
@@ -56,6 +63,8 @@ export default function TransactionDialog({ open, onOpenChange, mode, ...props }
 function TransactionForm({ mode, account = null, accounts = [], bank = null, categories = [], transaction = null, onSaved, onOpenChange }) {
     const { t } = useTranslation();
     const isEdit = mode === "edit";
+    // Both sides are chosen by the user when editing or starting from nothing.
+    const freeSides = isEdit || mode === "new";
     const sides = initialSides({ mode, account, bank, transaction });
 
     const [sender, setSender] = useState(sides.sender);
@@ -71,7 +80,7 @@ function TransactionForm({ mode, account = null, accounts = [], bank = null, cat
         ...(bank ? [{ id: bank.id, label: t("transaction.bank") }] : []),
         ...accounts.map((item) => ({ id: item.id, label: item.label })),
     ];
-    const receiverOptions = isEdit ? sideOptions : accounts.filter((item) => item.id !== account?.id);
+    const receiverOptions = freeSides ? sideOptions : accounts.filter((item) => item.id !== account?.id);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -123,13 +132,13 @@ function TransactionForm({ mode, account = null, accounts = [], bank = null, cat
     return (
         <form onSubmit={handleSubmit}>
             <FieldGroup className="py-3">
-                {isEdit && (
+                {freeSides && (
                     <Field>
                         <FieldLabel>{t("transaction.table.sender")}</FieldLabel>
                         {accountSelect(sender, setSender, sideOptions, t("transaction.fields.sender_placeholder"))}
                     </Field>
                 )}
-                {(isEdit || mode === "transfer") && (
+                {(freeSides || mode === "transfer") && (
                     <Field>
                         <FieldLabel>{t("account.transactions.fields.receiver")}</FieldLabel>
                         {accountSelect(receiver, setReceiver, receiverOptions, t("account.transactions.fields.receiver_placeholder"))}

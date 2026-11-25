@@ -9,6 +9,7 @@ import {
 import { deleteTransaction } from "@/api/transaction";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Edit, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
@@ -173,7 +174,9 @@ export default function TransactionList({ transactions, setTransactions, updateA
                                 <TableCell className="text-end">
                                     <DropdownMenu modal={false}>
                                         <DropdownMenuTrigger asChild>
-                                            <MoreHorizontalIcon className="hover:text-neutral-500" />
+                                            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('core.actions')}>
+                                                <MoreHorizontalIcon />
+                                            </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent className="w-40" align="end">
                                             <DropdownMenuItem onSelect={() => {

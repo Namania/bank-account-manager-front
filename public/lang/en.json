@@ -61,7 +61,8 @@
       "system": "System"
     },
     "save": "Save",
-    "close": "Close"
+    "close": "Close",
+    "actions": "Actions"
   },
   "account": {
     "created": "Account created",
@@ -257,7 +258,8 @@
     "actions": {
       "delete": "Delete",
       "edit": "Edit"
-    }
+    },
+    "new_desc": "Choose both accounts, the amount and the date."
   },
   "profile": {
     "info": {
@@ -329,7 +331,6 @@
     "paused": "Paused",
     "pause": "Pause",
     "resume": "Resume",
-    "actions": "Actions",
     "delete": {
       "title": "Delete the recurring transaction?",
       "desc": "Transactions already created are kept. No new one will be created."

@@ -100,7 +100,7 @@ function BudgetCard({ budget, onEdit, onDelete }) {
                 </CardTitle>
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t("recurring.actions")}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t("core.actions")}>
                             <MoreVertical className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>

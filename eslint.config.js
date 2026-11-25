@@ -28,6 +28,11 @@ export default defineConfig([
     },
   },
   {
+    // Tests run in Node.
+    files: ['**/*.test.js'],
+    languageOptions: { globals: { ...globals.node } },
+  },
+  {
     // Generated shadcn/ui components and files that export helpers next to a component.
     files: [
       'src/components/ui/**/*.jsx',

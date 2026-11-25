@@ -55,7 +55,7 @@ export default function BalanceChart({ months, height = 220 }) {
                     dataKey="balance"
                     stroke="var(--viz-1)"
                     strokeWidth={2}
-                    dot={data.length <= 12 ? { r: 3, fill: "var(--viz-1)", stroke: "var(--card)", strokeWidth: 2 } : false}
+                    dot={data.length <= 12 ? { r: 4, fill: "var(--viz-1)", stroke: "var(--card)", strokeWidth: 2 } : false}
                     activeDot={{ r: 5, stroke: "var(--card)", strokeWidth: 2 }}
                     isAnimationActive={false}
                 />

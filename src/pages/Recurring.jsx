@@ -294,7 +294,7 @@ export default function Recurring() {
                                         <TableCell className="text-end">
                                             <DropdownMenu modal={false}>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t("recurring.actions")}>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t("core.actions")}>
                                                         <MoreHorizontalIcon />
                                                     </Button>
                                                 </DropdownMenuTrigger>
