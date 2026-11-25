@@ -53,7 +53,7 @@ export function AppSidebar() {
                     <img src="/images/logo.svg" alt="Logo" className="h-12 w-12 object-contain" />
                     <div className="flex flex-col justify-center">
                         <h2 className="text-lg font-semibold">Account Manager</h2>
-                        <p className="text-neutral-500 text-[12px]">v0.1.4</p>
+                        <p className="text-neutral-500 text-[12px]">v{__APP_VERSION__}</p>
                     </div>
                 </SidebarHeader>
             </SlideYAnimation>
