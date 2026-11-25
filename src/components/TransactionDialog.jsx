@@ -46,7 +46,7 @@ export default function TransactionDialog({ open, onOpenChange, mode, ...props }
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px] max-h-[90dvh] overflow-y-auto">
+            <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>{t(TITLES[mode] ?? TITLES.transfer)}</DialogTitle>
                     <DialogDescription>
@@ -118,7 +118,7 @@ function TransactionForm({ mode, account = null, accounts = [], bank = null, cat
 
     const accountSelect = (value, onChange, options, placeholder) => (
         <Select value={value} onValueChange={onChange}>
-            <SelectTrigger>
+            <SelectTrigger className="w-full min-w-0">
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>
@@ -167,7 +167,7 @@ function TransactionForm({ mode, account = null, accounts = [], bank = null, cat
                 <Field>
                     <FieldLabel>{t("account.transactions.fields.category")}</FieldLabel>
                     <Select value={category} onValueChange={setCategory}>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full min-w-0">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

@@ -69,7 +69,7 @@ export default function TransactionFilters({ value, onChange, categories = [], a
             <div className="space-y-1">
                 <Label>{t("transaction.table.category")}</Label>
                 <Select value={draft.category || ALL} onValueChange={fromSelect("category")}>
-                    <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full min-w-0"><SelectValue /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value={ALL}>{t("transaction.filters.all")}</SelectItem>
                         <SelectItem value="none">{t("transaction.no_category")}</SelectItem>
@@ -83,7 +83,7 @@ export default function TransactionFilters({ value, onChange, categories = [], a
                 <div className="space-y-1">
                     <Label>{t("transaction.filters.account")}</Label>
                     <Select value={draft.account || ALL} onValueChange={fromSelect("account")}>
-                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="w-full min-w-0"><SelectValue /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value={ALL}>{t("transaction.filters.all")}</SelectItem>
                             {accounts.map((account) => (
@@ -104,7 +104,7 @@ export default function TransactionFilters({ value, onChange, categories = [], a
             <div className="space-y-1">
                 <Label>{t("transaction.filters.ordering")}</Label>
                 <Select value={draft.ordering || ORDERINGS[0]} onValueChange={(next) => set("ordering")(next === ORDERINGS[0] ? "" : next)}>
-                    <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full min-w-0"><SelectValue /></SelectTrigger>
                     <SelectContent>
                         {ORDERINGS.map((ordering) => (
                             <SelectItem key={ordering} value={ordering}>{t(`transaction.filters.orderings.${ordering}`)}</SelectItem>

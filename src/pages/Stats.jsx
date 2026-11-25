@@ -119,7 +119,7 @@ export default function Stats() {
                 <div className="space-y-1 min-w-48">
                     <Label>{t("transaction.filters.account")}</Label>
                     <Select value={filters.account || ALL} onValueChange={(value) => setFilter("account")(value === ALL ? "" : value)}>
-                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectTrigger className="w-full min-w-0"><SelectValue /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value={ALL}>{t("stats.all_accounts")}</SelectItem>
                             {accounts.map((account) => (

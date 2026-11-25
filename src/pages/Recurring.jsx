@@ -77,7 +77,7 @@ function RecurringForm({ rule, accounts, bank, categories, onSaved, onOpenChange
 
     const accountSelect = (value, onChange, placeholder) => (
         <Select value={value} onValueChange={onChange}>
-            <SelectTrigger className="w-full"><SelectValue placeholder={placeholder} /></SelectTrigger>
+            <SelectTrigger className="w-full min-w-0"><SelectValue placeholder={placeholder} /></SelectTrigger>
             <SelectContent>
                 {sides.map((side) => (
                     <SelectItem key={side.id} value={String(side.id)}>{side.label}</SelectItem>
@@ -89,7 +89,7 @@ function RecurringForm({ rule, accounts, bank, categories, onSaved, onOpenChange
     return (
         <form onSubmit={handleSubmit}>
             <FieldGroup className="py-3">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 [&>*]:min-w-0">
                     <Field>
                         <FieldLabel>{t("transaction.table.sender")}</FieldLabel>
                         {accountSelect(sender, setSender, t("transaction.fields.sender_placeholder"))}
@@ -99,7 +99,7 @@ function RecurringForm({ rule, accounts, bank, categories, onSaved, onOpenChange
                         {accountSelect(receiver, setReceiver, t("account.transactions.fields.receiver_placeholder"))}
                     </Field>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 [&>*]:min-w-0">
                     <Field>
                         <FieldLabel htmlFor="recurring-amount">{t("account.transactions.fields.amount")}</FieldLabel>
                         <Input id="recurring-amount" type="number" step="0.01" min="0.01" placeholder="0.00" value={amount} onChange={(event) => setAmount(event.target.value)} required />
@@ -107,7 +107,7 @@ function RecurringForm({ rule, accounts, bank, categories, onSaved, onOpenChange
                     <Field>
                         <FieldLabel>{t("account.transactions.fields.category")}</FieldLabel>
                         <Select value={category} onValueChange={setCategory}>
-                            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                            <SelectTrigger className="w-full min-w-0"><SelectValue /></SelectTrigger>
                             <SelectContent>
                                 <SelectItem value={NO_CATEGORY}>{t("transaction.no_category")}</SelectItem>
                                 {categories.map((item) => (
@@ -117,11 +117,11 @@ function RecurringForm({ rule, accounts, bank, categories, onSaved, onOpenChange
                         </Select>
                     </Field>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 [&>*]:min-w-0">
                     <Field>
                         <FieldLabel>{t("recurring.frequency")}</FieldLabel>
                         <Select value={frequency} onValueChange={setFrequency} disabled={isEdit}>
-                            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                            <SelectTrigger className="w-full min-w-0"><SelectValue /></SelectTrigger>
                             <SelectContent>
                                 {FREQUENCIES.map((item) => (
                                     <SelectItem key={item} value={item}>{t(`recurring.frequencies.${item}`)}</SelectItem>
@@ -244,7 +244,7 @@ export default function Recurring() {
     return (
         <div className="p-3 sm:p-6 space-y-6">
             <Dialog open={isModalOpen || editing !== null} onOpenChange={closeDialog}>
-                <DialogContent className="sm:max-w-[520px] max-h-[90dvh] overflow-y-auto">
+                <DialogContent className="sm:max-w-[520px]">
                     <DialogHeader>
                         <DialogTitle>{t(editing ? "recurring.edit" : "recurring.new")}</DialogTitle>
                         <DialogDescription>{t("recurring.desc")}</DialogDescription>
@@ -282,13 +282,13 @@ export default function Recurring() {
                                     </span>
                                     <div className="min-w-0 flex-1 space-y-1">
                                         <div className="flex items-baseline justify-between gap-2">
-                                            <span className="truncate text-sm font-medium">{rule.comment || t(`recurring.frequencies.${rule.frequency}`)}</span>
+                                            <span className="min-w-0 truncate text-sm font-medium">{rule.comment || t(`recurring.frequencies.${rule.frequency}`)}</span>
                                             <span className="shrink-0 text-sm font-bold tabular-nums">{formatMoney(rule.amount, language)}</span>
                                         </div>
                                         <div className="flex min-w-0 items-center gap-1.5 text-sm">
-                                            <Badge variant="outline" className="max-w-full"><span className="truncate">{sideLabel(rule.sender_details)}</span></Badge>
+                                            <Badge variant="outline" className="min-w-0 shrink max-w-full"><span className="truncate">{sideLabel(rule.sender_details)}</span></Badge>
                                             <ArrowRightIcon aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
-                                            <Badge variant="outline" className="max-w-full"><span className="truncate">{sideLabel(rule.receiver_details)}</span></Badge>
+                                            <Badge variant="outline" className="min-w-0 shrink max-w-full"><span className="truncate">{sideLabel(rule.receiver_details)}</span></Badge>
                                         </div>
                                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
                                             <span>{t(`recurring.frequencies.${rule.frequency}`)}</span>

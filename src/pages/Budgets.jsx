@@ -59,7 +59,7 @@ function BudgetForm({ budget, categories, taken, onSaved, onOpenChange }) {
                     <p className="text-sm font-medium">{budget.category_details?.label}</p>
                 ) : (
                     <Select value={category} onValueChange={setCategory}>
-                        <SelectTrigger className="w-full"><SelectValue placeholder={t("account.transactions.fields.category_placeholder")} /></SelectTrigger>
+                        <SelectTrigger className="w-full min-w-0"><SelectValue placeholder={t("account.transactions.fields.category_placeholder")} /></SelectTrigger>
                         <SelectContent>
                             {available.map((item) => (
                                 <SelectItem key={item.id} value={String(item.id)}>{item.label}</SelectItem>

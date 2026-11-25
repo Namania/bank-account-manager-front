@@ -52,7 +52,7 @@ function AccountBadge({ account }) {
         <Badge
             variant="outline"
             title={inactive ? t('transaction.inactive_account') : undefined}
-            className={`font-medium max-w-full ${account.is_bank ? 'text-muted-foreground' : ''} ${inactive ? 'line-through text-muted-foreground' : ''}`}
+            className={`font-medium max-w-full ${account.is_bank ? 'shrink-0 text-muted-foreground' : 'min-w-0 shrink'} ${inactive ? 'line-through text-muted-foreground' : ''}`}
         >
             <span className="truncate">{account.is_bank ? t('transaction.bank') : account.label}</span>
         </Badge>
@@ -68,10 +68,10 @@ function CategoryBadge({ category }) {
     return (
         <Badge
             variant="outline"
-            className="font-medium"
+            className="font-medium min-w-0 shrink max-w-full"
             style={{ borderColor: category.color, color: category.color, backgroundColor: `${category.color}10` }}
         >
-            {category.label}
+            <span className="truncate">{category.label}</span>
         </Badge>
     );
 }
@@ -175,7 +175,7 @@ export default function TransactionList({ transactions, setTransactions, updateA
                             <DirectionChip tx={tx} className="size-10" />
                             <div className="min-w-0 flex-1 space-y-1">
                                 <div className="flex items-baseline justify-between gap-2">
-                                    <span className="truncate text-sm font-medium">{noteOf(tx) || t('transaction.untitled')}</span>
+                                    <span className="min-w-0 truncate text-sm font-medium">{noteOf(tx) || t('transaction.untitled')}</span>
                                     <span className="shrink-0 text-sm font-bold tabular-nums">{amountOf(tx)}</span>
                                 </div>
                                 <div className="flex min-w-0 items-center gap-1.5">
@@ -183,8 +183,8 @@ export default function TransactionList({ transactions, setTransactions, updateA
                                     <ArrowRightIcon aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
                                     <AccountBadge account={tx.receiver_details} />
                                 </div>
-                                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-                                    <span>{formatDay(tx.date, language)}</span>
+                                <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                                    <span className="shrink-0">{formatDay(tx.date, language)}</span>
                                     <CategoryBadge category={tx.category_details} />
                                 </div>
                             </div>
