@@ -19,9 +19,14 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { EditCategoryDialog } from "@/components/EditCategoryDialog";
 import SlideXAnimation from "@/components/animation/SlideXAnimation";
 import FadeAnimation from "@/components/animation/FadeAnimation";
+import { useAuth } from "@/auth/AuthContext";
 
 export default function Category() {
     const { t } = useTranslation();
+    const { user } = useAuth();
+
+    // Categories without an owner are shared: only staff may change them.
+    const canEdit = (category) => category.owner != null || Boolean(user?.is_staff);
 
     const [categories, setCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -50,7 +55,7 @@ export default function Category() {
             await deleteCategory(idToDelete);
             setCategories((prev) => prev.filter((cat) => cat.id !== idToDelete));
             toast.success(t('category.delete.actions.success'));
-        } catch (error) {
+        } catch {
             toast.error(t('category.delete.actions.error'));
         } finally {
             setIsAlertOpen(false);
@@ -63,15 +68,15 @@ export default function Category() {
             try {
                 const data = await getCategories();
                 setCategories(data);
-            } catch (error) {
-                console.error(error);
+            } catch {
+                toast.error(t('core.fetch_error'));
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchCategories();
-    }, []);
+    }, [t]);
 
     return isLoading ? (<></>) : (
         <div className="h-full p-6 space-y-6">
@@ -131,7 +136,7 @@ export default function Category() {
                                             {category.label}
                                         </CardTitle>
                                     </div>
-                                    <DropdownMenu>
+                                    {canEdit(category) && <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button variant="ghost" size="icon" className="h-8 w-8">
                                                 <MoreVertical className="h-4 w-4" />
@@ -154,7 +159,7 @@ export default function Category() {
                                                 <Trash2 className="mr-2 h-4 w-4 text-destructive" /> {t('category.actions.delete')}
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    </DropdownMenu>}
                                 </CardHeader>
                             </Card>
                         </SlideXAnimation>

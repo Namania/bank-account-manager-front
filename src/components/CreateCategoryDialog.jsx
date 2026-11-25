@@ -3,8 +3,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { createCategory } from "@/api/category";
 
 export function CreateCategoryDialog({ open, onOpenChange, onCreated }) {
     const { t } = useTranslation();
@@ -24,13 +25,12 @@ export function CreateCategoryDialog({ open, onOpenChange, onCreated }) {
         e.preventDefault();
         setLoading(true);
         try {
-            const API_URL = import.meta.env.VITE_API_URL;
-            const response = await axios.post(`${API_URL}/categories/`, { label, color });
-            onCreated(response.data);
+            const created = await createCategory({ label, color });
+            onCreated(created);
             close(false);
             setLabel("");
-        } catch (error) {
-            console.error("Erreur creation:", error);
+        } catch {
+            toast.error(t('core.fetch_error'));
         } finally {
             setLoading(false);
         }

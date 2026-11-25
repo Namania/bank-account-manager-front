@@ -28,8 +28,7 @@ export function EditCategoryDialog({ open, onOpenChange, category, onUpdated }) 
             onUpdated(updatedData);
             onOpenChange(false);
             toast.success(t('category.edit.actions.success'));
-        } catch (error) {
-            console.error("Erreur modification:", error);
+        } catch {
             toast.error(t('category.edit.actions.error'));
         } finally {
             setLoading(false);

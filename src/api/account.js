@@ -17,7 +17,14 @@ export const createAccount = async (data) => {
     return response.data;
 }
 
+// The API deactivates the account instead of removing it.
 export const deleteAccount = async (id) => {
-    const response = await client.patch(`${API_URL}/accounts/${id}/`, { isActive: false });
+    const response = await client.delete(`${API_URL}/accounts/${id}/`);
+    return response.data;
+}
+
+// Counterparty of every external credit and debit.
+export const getBankAccount = async () => {
+    const response = await client.get(`${API_URL}/accounts/bank/`);
     return response.data;
 }

@@ -42,7 +42,7 @@ export default function LoginPage() {
             await login(values);
             navigate('/', { replace: true });
         } catch (err) {
-            setError(t('core.login.errors.invalid'));
+            setError(t(err.response?.status === 429 ? 'core.login.errors.throttled' : 'core.login.errors.invalid'));
         } finally {
             setIsLoading(false);
         }

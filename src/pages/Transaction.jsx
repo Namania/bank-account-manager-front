@@ -30,7 +30,7 @@ export default function Transaction() {
             try {
                 const responseData = await getTransactions(currentPage);
                 setData(responseData);
-            } catch (error) {
+            } catch {
                 toast.error(t('core.fetch_error'));
             }
         };

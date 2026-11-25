@@ -10,7 +10,7 @@ export const prepareChartData = (pk, balance, transactions) => {
     );
 
     const data = [];
-    let currentRunningBalance = parseFloat(balance) / 100;
+    let currentRunningBalance = parseFloat(balance);
 
     for (let i = sorted.length - 1; i >= 0; i--) {
         const t = sorted[i];

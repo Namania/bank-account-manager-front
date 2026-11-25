@@ -4,7 +4,7 @@ export function isNumeric(value) {
     return /^-?\d+$/.test(value);
 }
 
-export function getBreadCrumbItems(path) {
+export function useBreadcrumbItems(path) {
     const { t } = useTranslation();
     const location = 'core.breadcrumb';
 

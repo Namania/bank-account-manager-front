@@ -10,9 +10,8 @@ import NotFound from './pages/NotFound';
 import Maintenance from './pages/Maintenance';
 import { useEffect, useState } from 'react';
 import { useTranslation } from "react-i18next";
-import { isLogged } from './auth/isLogged';
 import LoginPage from './pages/LoginPage';
-import { AuthProvider } from "./auth/AuthContext";
+import { AuthProvider, useAuth } from "./auth/AuthContext";
 import Category from './pages/Categories';
 import { Toaster } from './components/ui/sonner';
 import Transaction from './pages/Transaction';
@@ -24,7 +23,8 @@ export default function Root() {
   const { i18n } = useTranslation();
 
   const defaultTheme = localStorage.getItem(`${localKey}.theme`) ?? 'dark';
-  const defaultLang = localStorage.getItem(`${localKey}.lang`) ?? 'fr';
+  const storedLang = localStorage.getItem(`${localKey}.lang`);
+  const defaultLang = ['fr', 'en'].includes(storedLang) ? storedLang : 'fr';
 
   useEffect(() => {
     i18n.changeLanguage(defaultLang);
@@ -40,13 +40,19 @@ export default function Root() {
 
   if (maintenance === null) return null;
 
+  if (maintenance) {
+    return (
+      <ThemeProvider defaultTheme={ defaultTheme }>
+        <Maintenance />
+      </ThemeProvider>
+    );
+  }
+
   return (
     <AuthProvider>
       <ThemeProvider defaultTheme={ defaultTheme }>
         <BrowserRouter>
           <Routes>
-
-            {maintenance && <Route path="*" element={<Maintenance />} />}
 
             <Route path="/auth/login" element={<LoginPage />} />
 
@@ -67,7 +73,10 @@ export default function Root() {
 }
 
 function LayoutWrapper() {
-  if (!isLogged()) {
+  const { isLogged, loading } = useAuth();
+
+  if (loading) return null;
+  if (!isLogged) {
     return <Navigate to="/auth/login" replace />;
   }
   return (

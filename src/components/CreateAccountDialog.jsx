@@ -6,11 +6,9 @@ import { Label } from "@/components/ui/label";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { createAccount } from "@/api/account";
-import { useAuth } from "@/auth/AuthContext";
 
 export function CreateAccountDialog({ open, onOpenChange, onCreated }) {
     const { t } = useTranslation();
-    const { user } = useAuth();
 
     const [label, setLabel] = useState("");
     const [balance, setBalance] = useState("0");
@@ -30,13 +28,10 @@ export function CreateAccountDialog({ open, onOpenChange, onCreated }) {
         setLoading(true);
 
         try {
-            const owners = [
-                user.id
-            ];
+            // Amounts travel in euros, as a 2-decimal string. The API sets the owner.
             const response = await createAccount({
-                owners,
-                label, 
-                balance: parseFloat(balance) * 100,
+                label,
+                balance: parseFloat(balance).toFixed(2),
             });
             onCreated(response);
             close(false);
@@ -45,8 +40,7 @@ export function CreateAccountDialog({ open, onOpenChange, onCreated }) {
             setBalance("0.00");
 
             toast.success(t('account.created'));
-        } catch (error) {
-            console.log(error);
+        } catch {
             toast.error(t('core.fetch_error'));
         } finally {
             setLoading(false);

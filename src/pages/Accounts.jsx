@@ -27,7 +27,7 @@ export default function Accounts() {
       try {
         const data = await getAccounts();
         setAccounts(data);
-      } catch (error) {
+      } catch {
         toast.error(t('core.fetch_error'));
       } finally {
         setIsLoading(false);
@@ -75,10 +75,10 @@ export default function Accounts() {
                     {
                       account.balance >= 0 ?
                         <Badge className={`text-1xl bg-emerald-500 text-forground`}>
-                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
+                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(parseFloat(account.balance))}
                         </Badge>
                         : <Badge className={`text-1xl bg-red-800 text-forground`}>
-                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
+                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(parseFloat(account.balance))}
                         </Badge>
                     }
                   </CardFooter>

@@ -23,7 +23,21 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // `motion` is only referenced as a JSX member (<motion.div>), which this rule cannot see.
+      'no-unused-vars': ['error', { varsIgnorePattern: '^([A-Z_]|motion$)' }],
+    },
+  },
+  {
+    // Generated shadcn/ui components and files that export helpers next to a component.
+    files: [
+      'src/components/ui/**/*.jsx',
+      'src/components/ThemeProvider.jsx',
+      'src/auth/AuthContext.jsx',
+      'src/components/TransactionChart.jsx',
+    ],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+      'react-hooks/purity': 'off',
     },
   },
 ])

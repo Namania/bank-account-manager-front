@@ -2,7 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
 import { DynamicBreadcrumb } from "./DynamicBreadcrumb";
-import { getBreadCrumbItems, isNumeric } from "@/conf/breadcrumb";
+import { useBreadcrumbItems, isNumeric } from "@/conf/breadcrumb";
 
 import Header from "./Header"
 import { Button } from "./ui/button";
@@ -15,7 +15,7 @@ export default function Layout() {
   const { t } = useTranslation();
   const location = useLocation();
   let path = location.pathname;
-  const breadcrumbItems = getBreadCrumbItems(path);
+  const breadcrumbItems = useBreadcrumbItems(path);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   

@@ -15,6 +15,12 @@ import { Edit, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog";
 
+// A transaction is read-only once one of its accounts is deactivated. The API
+// also refuses (403) when an account belongs to someone else, which only it knows.
+const isLocked = (tx) => [tx.sender_details, tx.receiver_details].some(
+    (account) => account && !account.is_bank && !account.isActive
+);
+
 export default function TransactionList({ transactions, setTransactions, updateAccount = null }) {
     const { t } = useTranslation();
     const [current, setCurrent] = useState(null);
@@ -24,17 +30,18 @@ export default function TransactionList({ transactions, setTransactions, updateA
         if (!current) return;
         try {
             await deleteTransaction(current.id);
-            const tmp = transactions.filter((tx) => tx.id !== current.id);
-            setTransactions({
-                results: tmp,
-                count: tmp.length
-            });
+            const deletedId = current.id;
+            setTransactions((prev) => ({
+                ...prev,
+                results: prev.results.filter((tx) => tx.id !== deletedId),
+                count: Math.max(0, prev.count - 1)
+            }));
             if (updateAccount) {
                 updateAccount();
             }
         } catch (error) {
-            console.error(error);
-            toast.error(t('core.fetch_error'));
+            // 403: one of the two accounts is not ours or has been deactivated.
+            toast.error(t(error.response?.status === 403 ? 'transaction.locked' : 'core.fetch_error'));
         } finally {
             setIsModalOpen(false);
         }
@@ -83,7 +90,7 @@ export default function TransactionList({ transactions, setTransactions, updateA
                             <TableCell>
                                 <Badge
                                     variant="outline"
-                                    className={`font-medium ${tx.sender_details.label === 'Bank' ? 'text-neutral-600' : ''}`}
+                                    className={`font-medium ${tx.sender_details.is_bank ? 'text-neutral-600' : ''}`}
                                 >
                                     {tx.sender_details.label}
                                 </Badge>
@@ -91,7 +98,7 @@ export default function TransactionList({ transactions, setTransactions, updateA
                             <TableCell>
                                 <Badge
                                     variant="outline"
-                                    className={`font-medium ${tx.receiver_details.label === 'Bank' ? 'text-neutral-600' : ''}`}
+                                    className={`font-medium ${tx.receiver_details.is_bank ? 'text-neutral-600' : ''}`}
                                 >
                                     {tx.receiver_details.label}
                                 </Badge>
@@ -113,8 +120,8 @@ export default function TransactionList({ transactions, setTransactions, updateA
                                     <span className="text-muted-foreground text-xs italic">Sans catégorie</span>
                                 )}
                             </TableCell>
-                            <TableCell className={`font-bold text-sm ${tx.sender_details.label === 'Bank' ? 'text-green-600' : tx.receiver_details.label === 'Bank' ? 'text-red-500' : ''}`}>
-                                {tx.receiver_details.label === 'Bank' ? '-' : ''}{parseFloat(tx.amount).toLocaleString('fr-FR', {
+                            <TableCell className={`font-bold text-sm ${tx.sender_details.is_bank ? 'text-green-600' : tx.receiver_details.is_bank ? 'text-red-500' : ''}`}>
+                                {tx.receiver_details.is_bank ? '-' : ''}{parseFloat(tx.amount).toLocaleString('fr-FR', {
                                     style: 'currency',
                                     currency: 'EUR'
                                 })}
@@ -135,13 +142,13 @@ export default function TransactionList({ transactions, setTransactions, updateA
                                         <MoreHorizontalIcon className="hover:text-neutral-500" />
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent className="w-40" align="end">
-                                        <DropdownMenuItem onSelect={() => setShowTransactionDialog(true)} disabled>
+                                        <DropdownMenuItem disabled>
                                             <Edit /> {t('transaction.actions.edit')}
                                         </DropdownMenuItem>
                                         <DropdownMenuItem onSelect={() => {
                                             setCurrent(tx);
                                             setIsModalOpen(true);
-                                        }} className="text-red-800">
+                                        }} className="text-red-800" disabled={isLocked(tx)}>
                                             <Trash2Icon className="text-red-500" /> {t('transaction.actions.delete')}
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>

@@ -24,6 +24,7 @@
       "title": "Connexion",
       "errors": {
         "invalid": "Identifiant ou mot de passe invalide",
+        "throttled": "Trop de tentatives. Réessayez dans une minute.",
         "password": "Le mot de passe doit avoir au minimum 6 charactères.",
         "username": "L'identifiant doit avoir au minimum 2 charactères."
       },
@@ -101,6 +102,7 @@
     },
     "transactions": {
       "empty": "Aucune transaction",
+      "invalid_amount": "Le montant doit être supérieur à zéro.",
       "recent": "Transactions récentes",
       "desc": "Créez une transaction avec ce compte",
       "credit": "Créditer le compte",
@@ -154,6 +156,7 @@
     "new": "Nouvelle Catégorie"
   },
   "transaction": {
+    "locked": "Transaction verrouillée : l'un de ses comptes ne vous appartient pas ou a été désactivé.",
     "created": "Transaction effectuée",
     "new": "Nouvelle Transaction",
     "table": {

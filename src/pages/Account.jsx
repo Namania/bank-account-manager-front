@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getAccount, deleteAccount, getAccounts } from "@/api/account";
+import { getAccount, deleteAccount, getAccounts, getBankAccount } from "@/api/account";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -25,13 +25,19 @@ import SlideYAnimation from "@/components/animation/SlideYAnimation";
 import FadeAnimation from "@/components/animation/FadeAnimation";
 import SlideXAnimation from "@/components/animation/SlideXAnimation";
 
+// Amounts travel in euros, as a strictly positive 2-decimal string.
+const toEuros = (value) => {
+  const amount = parseFloat(value);
+  return amount > 0 ? amount.toFixed(2) : null;
+};
+
 export default function Account() {
   const { id } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isModalOpen, setIsModalOpen } = useOutletContext();
 
-  const bankId = import.meta.env.VITE_BANK_ID;
+  const [bankId, setBankId] = useState(null);
   const [amount, setAmount] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedReceiver, setSelectedReceiver] = useState("");
@@ -51,13 +57,14 @@ export default function Account() {
 
   const handleCredit = async (e) => {
     e.preventDefault();
-    const amountInCents = parseFloat(amount);
+    const euros = toEuros(amount);
+    if (!euros) return toast.error(t('account.transactions.invalid_amount'));
 
     try {
       const response = await createTransaction({
         sender: bankId,
         receiver: account.id,
-        amount: amountInCents,
+        amount: euros,
         category: selectedCategory,
         comment: description,
       });
@@ -71,20 +78,21 @@ export default function Account() {
       updateAccount();
 
       toast.success(t('transaction.created'));
-    } catch (error) {
+    } catch {
       toast.error(t('core.fetch_error'));
     }
   };
 
   const handleDebit = async (e) => {
     e.preventDefault();
-    const amountInCents = parseFloat(amount);
+    const euros = toEuros(amount);
+    if (!euros) return toast.error(t('account.transactions.invalid_amount'));
 
     try {
       const response = await createTransaction({
         sender: account.id,
         receiver: bankId,
-        amount: amountInCents,
+        amount: euros,
         category: selectedCategory,
         comment: description,
       });
@@ -98,20 +106,21 @@ export default function Account() {
       updateAccount();
 
       toast.success(t('transaction.created'));
-    } catch (error) {
+    } catch {
       toast.error(t('core.fetch_error'));
     }
   };
 
   const handleOver = async (e) => {
     e.preventDefault();
-    const amountInCents = parseFloat(amount);
+    const euros = toEuros(amount);
+    if (!euros) return toast.error(t('account.transactions.invalid_amount'));
 
     try {
       const response = await createTransaction({
         sender: account.id,
         receiver: selectedReceiver,
-        amount: amountInCents,
+        amount: euros,
         category: selectedCategory,
         comment: description,
       });
@@ -125,7 +134,7 @@ export default function Account() {
       updateAccount();
 
       toast.success(t('transaction.created'));
-    } catch (error) {
+    } catch {
       toast.error(t('core.fetch_error'));
     }
   };
@@ -149,7 +158,7 @@ export default function Account() {
     try {
       await deleteAccount(id);
       navigate('/');
-    } catch (error) {
+    } catch {
       toast.error(t('core.fetch_error'));
     } finally {
       setIsModalOpen(false);
@@ -160,11 +169,12 @@ export default function Account() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [accountRes, accountsRes, transRes, cat] = await Promise.all([
+        const [accountRes, accountsRes, transRes, cat, bank] = await Promise.all([
           getAccount(id),
           getAccounts(),
           getTransactionsById(id, 1),
-          getCategories()
+          getCategories(),
+          getBankAccount()
         ]);
 
         if (!accountRes) {
@@ -175,7 +185,8 @@ export default function Account() {
         setAccounts(accountsRes);
         setTransactionsData(transRes);
         setCategories(cat);
-      } catch (error) {
+        setBankId(bank.id);
+      } catch {
         toast.error(t('core.fetch_error'));
       } finally {
         setIsLoading(false);
@@ -191,7 +202,7 @@ export default function Account() {
       try {
         const data = await getTransactionsById(id, currentPage);
         setTransactionsData(data);
-      } catch (error) {
+      } catch {
         toast.error(t('core.fetch_error'));
       } finally {
         setIsLoadingTransactions(false);
@@ -492,7 +503,7 @@ export default function Account() {
               <div className="mt-4">
                 <FadeAnimation delay={.8} className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">{t('account.info.balance')}</FadeAnimation>
                 <FadeAnimation delay={1} className={`text-3xl font-black ${account.balance >= 0 ? 'text-emerald-500' : 'text-red-800'}`}>
-                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(account.balance / 100)}
+                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(parseFloat(account.balance))}
                 </FadeAnimation>
               </div>
             </CardContent>
