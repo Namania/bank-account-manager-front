@@ -5,7 +5,8 @@
       "category": "Categories",
       "not-found": "Page not found",
       "transaction": "Transactions",
-      "profile": "My account"
+      "profile": "My account",
+      "stats": "Statistics"
     },
     "cancel": "Cancel",
     "create": "Create",
@@ -57,7 +58,8 @@
       "dark": "Dark",
       "system": "System"
     },
-    "save": "Save"
+    "save": "Save",
+    "close": "Close"
   },
   "account": {
     "created": "Account created",
@@ -99,7 +101,7 @@
       "empty_title": "Trend graph",
       "empty_desc": "The data will be available after your first transactions.",
       "title": "Change in balance",
-      "desc": "Visualization of flows over the period",
+      "desc": "Balance at the end of each month.",
       "balance": "Balance"
     },
     "transactions": {
@@ -126,6 +128,36 @@
       "title": "Rename the account",
       "desc": "Choose the new name of the account.",
       "success": "Account renamed"
+    },
+    "share": {
+      "label": "Share",
+      "title": "Share the account",
+      "desc": "Co-owners see the account and can create transactions on it.",
+      "you": "you",
+      "add": "Add a co-owner",
+      "submit": "Add",
+      "remove": "Remove",
+      "leave": "Leave",
+      "added": "Co-owner added",
+      "removed": "Co-owner removed",
+      "errors": {
+        "unknown": "No user has this name.",
+        "already": "This user is already a co-owner.",
+        "last": "The last owner cannot be removed."
+      }
+    },
+    "import": {
+      "label": "Import a statement",
+      "title": "Import a statement",
+      "desc": "CSV or OFX file, 1 MB at most. Importing the same statement again creates no duplicate.",
+      "file": "File",
+      "submit": "Import",
+      "result": "{{created}} transaction(s) created, {{skipped}} skipped.",
+      "line": "Line {{line}}",
+      "errors": {
+        "too_large": "The file is larger than 1 MB.",
+        "unreadable": "The file cannot be read."
+      }
     }
   },
   "category": {
@@ -138,11 +170,11 @@
       "title": "New Categorie"
     },
     "delete": {
-      "confirm_title": "Are you absolutely sure?",
-      "confirm_desc": "This action is irreversible. It will permanently delete the category and may affect related transactions.",
+      "title": "Are you absolutely sure?",
+      "desc": "This action is irreversible. It will permanently delete the category and may affect related transactions.",
       "actions": {
         "error": "Unable to delete the category",
-        "success": "Categorie deleted"
+        "success": "Category deleted"
       }
     },
     "edit": {
@@ -195,6 +227,34 @@
     },
     "fields": {
       "sender_placeholder": "Select a sender"
+    },
+    "count_one": "{{count}} transaction",
+    "count_other": "{{count}} transactions",
+    "filters": {
+      "search": "Search",
+      "search_placeholder": "Text in the description",
+      "date_from": "From",
+      "date_to": "To",
+      "all": "All",
+      "account": "Account",
+      "amount_min": "Min. amount",
+      "amount_max": "Max. amount",
+      "ordering": "Sort",
+      "apply": "Filter",
+      "reset": "Clear filters",
+      "empty": "No transaction matches the filters.",
+      "orderings": {
+        "-date": "Date, newest first",
+        "date": "Date, oldest first",
+        "-amount": "Amount, high to low",
+        "amount": "Amount, low to high",
+        "-created_at": "Entered, newest first",
+        "created_at": "Entered, oldest first"
+      }
+    },
+    "actions": {
+      "delete": "Delete",
+      "edit": "Edit"
     }
   },
   "profile": {
@@ -216,6 +276,31 @@
         "current": "The current password is incorrect.",
         "mismatch": "The two new passwords do not match."
       }
+    }
+  },
+  "stats": {
+    "income": "Income",
+    "expense": "Expenses",
+    "net": "Net",
+    "balance_end": "End-of-month balance",
+    "all_accounts": "All accounts",
+    "empty": "No data for this period.",
+    "monthly": {
+      "title": "Income and expenses by month",
+      "desc": "Transfers between your own accounts are left out."
+    },
+    "balance": {
+      "title": "Balance over time",
+      "desc": "Total balance at the end of each month."
+    },
+    "categories": {
+      "title": "Expenses by category",
+      "desc": "Largest first, over the chosen period."
+    },
+    "table": {
+      "title": "Month by month",
+      "desc": "The same figures, as a table.",
+      "month": "Month"
     }
   }
 }

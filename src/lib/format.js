@@ -28,3 +28,9 @@ export const today = () => {
     const pad = (n) => String(n).padStart(2, "0");
     return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 };
+
+// "2026-01" -> "janv. 2026"
+export const formatMonth = (month, language, options = { month: "short", year: "numeric" }) => {
+    const [year, index] = month.split("-").map(Number);
+    return new Date(year, index - 1, 1).toLocaleDateString(toLocale(language), options);
+};

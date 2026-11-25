@@ -29,6 +29,9 @@ export function useBreadcrumbItems(path) {
         '/category': [
             { label: t(`${location}.category`) },
         ],
+        '/stats': [
+            { label: t(`${location}.stats`) },
+        ],
         '/profile': [
             { label: t(`${location}.profile`) },
         ],

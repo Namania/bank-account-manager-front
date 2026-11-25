@@ -2,7 +2,7 @@ import LanguageToggle from "@/components/LanguageToggle";
 import { Hammer } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-export default function Maintenance() {
+export default function Maintenance({ message = "" }) {
     const { t } = useTranslation();
     const location = "core.maintenance";
 
@@ -16,7 +16,7 @@ export default function Maintenance() {
                     { t(`${location}.title`) }
                 </h1>
                 <p className="text-muted-foreground max-w-md">
-                    { t(`${location}.description`) }
+                    { message || t(`${location}.description`) }
                 </p>
             </div>
             <LanguageToggle className="fixed right-2 top-2" />

@@ -33,7 +33,6 @@ export default defineConfig([
       'src/components/ui/**/*.jsx',
       'src/components/ThemeProvider.jsx',
       'src/auth/AuthContext.jsx',
-      'src/components/TransactionChart.jsx',
     ],
     rules: {
       'react-refresh/only-export-components': 'off',

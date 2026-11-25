@@ -3,6 +3,8 @@ services:
     image: node:24-alpine
     container_name: bank-account-mngt-front
     working_dir: /app
+    # The dev server can exit when a watched file is deleted under it: bring it back.
+    restart: unless-stopped
     command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
     # File events do not always cross the bind mount: without polling, Vite
     # misses files added while it runs (new public assets fall back to index.html).

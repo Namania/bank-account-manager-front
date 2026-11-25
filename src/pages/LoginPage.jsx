@@ -21,7 +21,7 @@ export default function LoginPage() {
     const [error, setError] = useState(null);
 
     const formSchema = z.object({
-        username: z.string().min(2, t('core.login.errors.name')),
+        username: z.string().min(2, t('core.login.errors.username')),
         password: z.string().min(6, t('core.login.errors.password')),
     });
 

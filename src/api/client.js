@@ -16,9 +16,36 @@ let csrfToken = null;
 let csrfPromise = null;
 let refreshPromise = null;
 let onSessionExpired = () => {};
+let onMaintenance = () => {};
 
 export const setSessionExpiredHandler = (handler) => {
     onSessionExpired = handler;
+};
+
+export const setMaintenanceHandler = (handler) => {
+    onMaintenance = handler;
+};
+
+// While maintenance is on, the API answers 503 { maintenance: true, message }
+// everywhere except /health/, the token endpoints and /csrf/.
+const reportMaintenance = (error) => {
+    if (error.response?.status === 503 && error.response.data?.maintenance === true) {
+        onMaintenance(error.response.data.message ?? "");
+    }
+};
+
+session.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        reportMaintenance(error);
+        return Promise.reject(error);
+    }
+);
+
+// Public: answers without a session. { status, maintenance, message }
+export const getHealth = async () => {
+    const response = await session.get("/health/");
+    return response.data;
 };
 
 // After a page reload the token is gone from memory: ask the API for it again.
@@ -73,6 +100,7 @@ client.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+        reportMaintenance(error);
 
         if (error.response?.status !== 401 || !originalRequest || originalRequest._retry) {
             return Promise.reject(error);

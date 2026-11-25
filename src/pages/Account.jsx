@@ -5,19 +5,24 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { MoreHorizontalIcon, User, Wallet, PlusIcon, MinusIcon, LucideGitCompareArrows, PencilIcon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { MoreHorizontalIcon, User, Wallet, PlusIcon, MinusIcon, LucideGitCompareArrows, PencilIcon, UsersIcon, UploadIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { getTransactionsById } from "@/api/transaction";
+import { getMonthlyStats } from "@/api/stats";
 import TransactionList from "@/components/TransactionList";
 import TransactionDialog from "@/components/TransactionDialog";
+import TransactionFilters from "@/components/TransactionFilters";
+import { EMPTY_FILTERS, hasFilters } from "@/lib/filters";
 import RenameAccountDialog from "@/components/RenameAccountDialog";
+import ShareAccountDialog from "@/components/ShareAccountDialog";
+import ImportStatementDialog from "@/components/ImportStatementDialog";
 import ListPagination from "@/components/ListPagination";
+import BalanceChart from "@/components/charts/BalanceChart";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getCategories } from "@/api/category";
-import { TransactionChart } from "@/components/TransactionChart";
 import SlideYAnimation from "@/components/animation/SlideYAnimation";
 import FadeAnimation from "@/components/animation/FadeAnimation";
 import SlideXAnimation from "@/components/animation/SlideXAnimation";
@@ -34,18 +39,31 @@ export default function Account() {
   const [account, setAccount] = useState(null);
   const [accounts, setAccounts] = useState([]);
   const [bank, setBank] = useState(null);
-  const [transactionsData, setTransactionsData] = useState({ results: [], count: 0 });
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingTransactions, setIsLoadingTransactions] = useState(false);
+
+  const [transactionsData, setTransactionsData] = useState({ results: [], count: 0 });
   const [currentPage, setCurrentPage] = useState(1);
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [months, setMonths] = useState([]);
+  // Bumped whenever the balance moved, to read the list and the chart again.
+  const [listVersion, setListVersion] = useState(0);
+  const [statsVersion, setStatsVersion] = useState(0);
 
   // "credit", "debit" or "transfer" while the transaction dialog is open.
   const [transactionMode, setTransactionMode] = useState(null);
   const [showRenameDialog, setShowRenameDialog] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
 
-  const updateAccount = async () => {
-    setAccount(await getAccount(id));
+  // The balance moved: read the account and its chart again.
+  const refreshBalance = async () => {
+    setStatsVersion((version) => version + 1);
+    try {
+      setAccount(await getAccount(id));
+    } catch {
+      toast.error(t('core.fetch_error'));
+    }
   };
 
   const handleCreated = (created) => {
@@ -54,7 +72,18 @@ export default function Account() {
       count: prev.count + 1,
       results: [created, ...prev.results]
     }));
-    updateAccount();
+    refreshBalance();
+  };
+
+  const handleImported = () => {
+    setCurrentPage(1);
+    setListVersion((version) => version + 1);
+    refreshBalance();
+  };
+
+  const applyFilters = (next) => {
+    setCurrentPage(1);
+    setFilters(next);
   };
 
   const confirmDelete = async () => {
@@ -69,53 +98,55 @@ export default function Account() {
     }
   };
 
+  // The account and what its dialogs need.
   useEffect(() => {
+    let ignore = false;
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [accountRes, accountsRes, transRes, cat, bankRes] = await Promise.all([
+        const [accountRes, accountsRes, cat, bankRes] = await Promise.all([
           getAccount(id),
           getAccounts(),
-          getTransactionsById(id, 1),
           getCategories(),
           getBankAccount()
         ]);
-
-        if (!accountRes) {
-          navigate('/');
-          return;
-        }
+        if (ignore) return;
         setAccount(accountRes);
         setAccounts(accountsRes);
-        setTransactionsData(transRes);
         setCategories(cat);
         setBank(bankRes);
-      } catch {
+      } catch (error) {
+        if (ignore) return;
+        // Not ours, deactivated or unknown: back to the list.
+        if (error.response?.status === 404) return navigate('/', { replace: true });
         toast.error(t('core.fetch_error'));
       } finally {
-        setIsLoading(false);
+        if (!ignore) setIsLoading(false);
       }
     };
-    if (id) fetchData();
-  }, [id, navigate]);
+    fetchData();
+    return () => { ignore = true; };
+  }, [id, navigate, t]);
 
+  // Its transactions, for the current page and filters.
   useEffect(() => {
-    const fetchNewPage = async () => {
-      if (isLoading) return;
-      setIsLoadingTransactions(true);
-      try {
-        const data = await getTransactionsById(id, currentPage);
-        setTransactionsData(data);
-      } catch {
-        toast.error(t('core.fetch_error'));
-      } finally {
-        setIsLoadingTransactions(false);
-      }
-    };
-    fetchNewPage();
-  }, [currentPage, id]);
+    let ignore = false;
+    getTransactionsById(id, currentPage, filters)
+      .then((data) => { if (!ignore) setTransactionsData(data); })
+      .catch(() => { if (!ignore) toast.error(t('core.fetch_error')); });
+    return () => { ignore = true; };
+  }, [id, currentPage, filters, listVersion, t]);
 
-  if (isLoading || isLoadingTransactions) {
+  // Its balance month by month.
+  useEffect(() => {
+    let ignore = false;
+    getMonthlyStats({ account: id })
+      .then((data) => { if (!ignore) setMonths(data); })
+      .catch(() => { if (!ignore) setMonths([]); });
+    return () => { ignore = true; };
+  }, [id, statsVersion]);
+
+  if (isLoading) {
     return (
       <div className="p-6 grid gap-6 md:grid-cols-3">
         <Skeleton className="h-[300px] md:col-span-1 rounded-xl" />
@@ -131,6 +162,7 @@ export default function Account() {
   const totalPages = Math.ceil(transactionsData.count / PAGE_SIZE);
   const isShared = account.owners.length > 1;
   const isPositive = parseFloat(account.balance) >= 0;
+  const hasTransactions = transactionsData.results.length > 0;
 
   return (
     <div className="p-6 space-y-8">
@@ -170,6 +202,19 @@ export default function Account() {
         account={account}
         onRenamed={setAccount}
       />
+      <ShareAccountDialog
+        open={showShareDialog}
+        onOpenChange={setShowShareDialog}
+        account={account}
+        onChanged={setAccount}
+        onLeft={() => navigate('/')}
+      />
+      <ImportStatementDialog
+        open={showImportDialog}
+        onOpenChange={setShowImportDialog}
+        account={account}
+        onImported={handleImported}
+      />
 
       <div className="flex items-center justify-between mb-6">
         <SlideYAnimation delay={.2} className="text-2xl font-bold tracking-tight">{t('account.info.title')}</SlideYAnimation>
@@ -202,7 +247,7 @@ export default function Account() {
                       <MoreHorizontalIcon />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-40" align="end">
+                  <DropdownMenuContent className="w-52" align="end">
                     <DropdownMenuItem onSelect={() => setTransactionMode("credit")}>
                       <PlusIcon /> {t('account.info.actions.credit')}
                     </DropdownMenuItem>
@@ -213,6 +258,12 @@ export default function Account() {
                       <MinusIcon /> {t('account.info.actions.debit')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
+                    <DropdownMenuItem onSelect={() => setShowImportDialog(true)}>
+                      <UploadIcon /> {t('account.import.label')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => setShowShareDialog(true)}>
+                      <UsersIcon /> {t('account.share.label')}
+                    </DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => setShowRenameDialog(true)}>
                       <PencilIcon /> {t('account.rename.label')}
                     </DropdownMenuItem>
@@ -232,10 +283,19 @@ export default function Account() {
         </SlideXAnimation>
 
         <FadeAnimation delay={.3} className="lg:col-span-2">
-          <Card className="border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
-            {transactionsData.results.length > 0 ?
-              <TransactionChart pk={account.id} balance={account.balance} transactions={transactionsData.results} />
-              : <div className="flex flex-col items-center text-center space-y-3">
+          <Card className="border-dashed border-muted bg-muted/0 shadow-lg min-h-[250px]">
+            {months.length > 0 ? (
+              <>
+                <CardHeader>
+                  <CardTitle>{t('account.chart.title')}</CardTitle>
+                  <CardDescription>{t('account.chart.desc')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <BalanceChart months={months} />
+                </CardContent>
+              </>
+            ) : (
+              <div className="flex flex-1 flex-col items-center justify-center text-center space-y-3 p-8">
                 <div className="p-3 bg-muted rounded-full">
                   <Wallet className="h-6 w-6 text-muted-foreground/50" />
                 </div>
@@ -244,7 +304,7 @@ export default function Account() {
                   <p className="text-xs text-muted-foreground/60">{t('account.chart.empty_desc')}</p>
                 </div>
               </div>
-            }
+            )}
           </Card>
         </FadeAnimation>
 
@@ -252,16 +312,20 @@ export default function Account() {
           <div className="flex items-center justify-between">
             <SlideYAnimation delay={.3} className="text-2xl font-bold tracking-tight">{t('account.transactions.recent')}</SlideYAnimation>
             <FadeAnimation delay={.6}>
-              <Badge variant="outline">{transactionsData.count} transactions</Badge>
+              <Badge variant="outline">{t('transaction.count', { count: transactionsData.count })}</Badge>
             </FadeAnimation>
           </div>
 
-          {transactionsData.results.length > 0 ? (
+          <FadeAnimation delay={.6}>
+            <TransactionFilters value={filters} onChange={applyFilters} categories={categories} />
+          </FadeAnimation>
+
+          {hasTransactions ? (
             <FadeAnimation delay={.8}>
               <TransactionList
                 transactions={transactionsData.results}
                 setTransactions={setTransactionsData}
-                updateAccount={updateAccount}
+                updateAccount={refreshBalance}
                 accounts={accounts}
                 bank={bank}
                 categories={categories}
@@ -271,7 +335,7 @@ export default function Account() {
             <FadeAnimation delay={.8}>
               <Card className="border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
                 <div className="p-12 text-center text-muted-foreground italic">
-                  {t('account.transactions.empty')}
+                  {t(hasFilters(filters) ? 'transaction.filters.empty' : 'account.transactions.empty')}
                 </div>
               </Card>
             </FadeAnimation>

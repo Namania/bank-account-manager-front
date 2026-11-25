@@ -36,7 +36,7 @@ export default function Accounts() {
     };
 
     fetchAccounts();
-  }, []);
+  }, [t]);
 
   return isLoading ? (<></>) : (
     <>

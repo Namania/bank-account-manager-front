@@ -29,6 +29,23 @@ export const deleteAccount = async (id) => {
     return response.data;
 }
 
+export const shareAccount = async (id, username) => {
+    const response = await client.post(`${API_URL}/accounts/${id}/share/`, { username });
+    return response.data;
+}
+
+export const unshareAccount = async (id, username) => {
+    await client.post(`${API_URL}/accounts/${id}/unshare/`, { username });
+}
+
+// CSV or OFX statement, 1 MB at most. Answers { created, skipped, errors: [{ line, error }] }.
+export const importStatement = async (id, file) => {
+    const form = new FormData();
+    form.append("file", file);
+    const response = await client.post(`${API_URL}/accounts/${id}/import/`, form);
+    return response.data;
+}
+
 // Counterparty of every external credit and debit.
 export const getBankAccount = async () => {
     const response = await client.get(`${API_URL}/accounts/bank/`);

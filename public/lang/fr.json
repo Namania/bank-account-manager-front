@@ -5,7 +5,8 @@
       "category": "Catégories",
       "not-found": "Page introuvable",
       "transaction": "Transactions",
-      "profile": "Mon compte"
+      "profile": "Mon compte",
+      "stats": "Statistiques"
     },
     "cancel": "Annuler",
     "create": "Créer",
@@ -58,7 +59,8 @@
       "dark": "Sombre",
       "system": "Système"
     },
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "close": "Fermer"
   },
   "account": {
     "created": "Compte créé avec succès",
@@ -100,7 +102,7 @@
       "empty_title": "Graphique d'évolution",
       "empty_desc": "Les données seront disponibles après vos premières transactions",
       "title": "Évolution du solde",
-      "desc": "Visualisation des flux sur la période",
+      "desc": "Solde en fin de mois.",
       "balance": "Solde"
     },
     "transactions": {
@@ -127,6 +129,36 @@
       "title": "Renommer le compte",
       "desc": "Choisissez le nouveau nom du compte.",
       "success": "Compte renommé"
+    },
+    "share": {
+      "label": "Partager",
+      "title": "Partager le compte",
+      "desc": "Les copropriétaires voient le compte et peuvent y créer des transactions.",
+      "you": "vous",
+      "add": "Ajouter un copropriétaire",
+      "submit": "Ajouter",
+      "remove": "Retirer",
+      "leave": "Quitter",
+      "added": "Copropriétaire ajouté",
+      "removed": "Copropriétaire retiré",
+      "errors": {
+        "unknown": "Aucun utilisateur ne porte ce nom.",
+        "already": "Cet utilisateur est déjà copropriétaire.",
+        "last": "Le dernier propriétaire ne peut pas être retiré."
+      }
+    },
+    "import": {
+      "label": "Importer un relevé",
+      "title": "Importer un relevé",
+      "desc": "Fichier CSV ou OFX, 1 Mo au maximum. Réimporter le même relevé ne crée pas de doublon.",
+      "file": "Fichier",
+      "submit": "Importer",
+      "result": "{{created}} transaction(s) créée(s), {{skipped}} ignorée(s).",
+      "line": "Ligne {{line}}",
+      "errors": {
+        "too_large": "Le fichier dépasse 1 Mo.",
+        "unreadable": "Le fichier est illisible."
+      }
     }
   },
   "category": {
@@ -200,6 +232,30 @@
     },
     "fields": {
       "sender_placeholder": "Sélectionnez un expéditeur"
+    },
+    "count_one": "{{count}} transaction",
+    "count_other": "{{count}} transactions",
+    "filters": {
+      "search": "Recherche",
+      "search_placeholder": "Texte de la description",
+      "date_from": "Du",
+      "date_to": "Au",
+      "all": "Tout",
+      "account": "Compte",
+      "amount_min": "Montant min.",
+      "amount_max": "Montant max.",
+      "ordering": "Tri",
+      "apply": "Filtrer",
+      "reset": "Effacer les filtres",
+      "empty": "Aucune transaction ne correspond aux filtres.",
+      "orderings": {
+        "-date": "Date, récentes d'abord",
+        "date": "Date, anciennes d'abord",
+        "-amount": "Montant décroissant",
+        "amount": "Montant croissant",
+        "-created_at": "Saisie, récentes d'abord",
+        "created_at": "Saisie, anciennes d'abord"
+      }
     }
   },
   "profile": {
@@ -221,6 +277,31 @@
         "current": "Le mot de passe actuel est incorrect.",
         "mismatch": "Les deux nouveaux mots de passe ne correspondent pas."
       }
+    }
+  },
+  "stats": {
+    "income": "Revenus",
+    "expense": "Dépenses",
+    "net": "Solde net",
+    "balance_end": "Solde fin de mois",
+    "all_accounts": "Tous les comptes",
+    "empty": "Aucune donnée sur cette période.",
+    "monthly": {
+      "title": "Revenus et dépenses par mois",
+      "desc": "Hors virements entre vos comptes."
+    },
+    "balance": {
+      "title": "Évolution du solde",
+      "desc": "Solde total en fin de mois."
+    },
+    "categories": {
+      "title": "Dépenses par catégorie",
+      "desc": "De la plus forte à la plus faible, sur la période choisie."
+    },
+    "table": {
+      "title": "Détail par mois",
+      "desc": "Les mêmes chiffres, en tableau.",
+      "month": "Mois"
     }
   }
 }

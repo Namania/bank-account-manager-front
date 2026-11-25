@@ -17,6 +17,10 @@ import { Toaster } from './components/ui/sonner';
 import Transaction from './pages/Transaction';
 import Account from './pages/Account';
 import Profile from './pages/Profile';
+import Stats from './pages/Stats';
+import { getHealth, setMaintenanceHandler } from './api/client';
+
+const MAINTENANCE_POLL_MS = 30_000;
 
 export default function Root() {
   const [maintenance, setMaintenance] = useState(null);
@@ -29,22 +33,36 @@ export default function Root() {
 
   useEffect(() => {
     i18n.changeLanguage(defaultLang);
-    fetch('/maintenance.json')
-      .then((res) => res.json())
-      .then((data) => {
-        setMaintenance(data.enabled);
-      })
-      .catch(() => {
-        setMaintenance(false);
-      });
   }, [defaultLang, i18n]);
+
+  // Maintenance is decided by the API: asked once at start, and reported by
+  // any request that comes back 503 while the app is in use.
+  useEffect(() => {
+    setMaintenanceHandler((message) => setMaintenance({ enabled: true, message }));
+    getHealth()
+      .then((health) => setMaintenance({ enabled: health.maintenance, message: health.message }))
+      .catch(() => setMaintenance((current) => current ?? { enabled: false, message: '' }));
+    return () => setMaintenanceHandler(() => {});
+  }, []);
+
+  // While in maintenance, ask again regularly and start afresh once it is over.
+  const inMaintenance = maintenance?.enabled === true;
+  useEffect(() => {
+    if (!inMaintenance) return;
+    const timer = setInterval(() => {
+      getHealth()
+        .then((health) => { if (!health.maintenance) window.location.reload(); })
+        .catch(() => {});
+    }, MAINTENANCE_POLL_MS);
+    return () => clearInterval(timer);
+  }, [inMaintenance]);
 
   if (maintenance === null) return null;
 
-  if (maintenance) {
+  if (inMaintenance) {
     return (
       <ThemeProvider defaultTheme={ defaultTheme }>
-        <Maintenance />
+        <Maintenance message={maintenance.message} />
       </ThemeProvider>
     );
   }
@@ -62,6 +80,7 @@ export default function Root() {
               <Route path="/account/:id" element={<Account />} />
               <Route path="/transaction" element={<Transaction />} />
               <Route path="/category" element={<Category />} />
+              <Route path="/stats" element={<Stats />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Route>
