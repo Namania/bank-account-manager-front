@@ -2,7 +2,9 @@ import {
     PiggyBankIcon,
     CreditCardIcon,
     LayoutGridIcon,
-    BarChart3Icon
+    BarChart3Icon,
+    RepeatIcon,
+    TargetIcon
 } from "lucide-react"
 
 import {
@@ -44,6 +46,16 @@ export function AppSidebar() {
             title: t(`${location}.category`),
             url: "/category",
             icon: LayoutGridIcon,
+        },
+        {
+            title: t(`${location}.recurring`),
+            url: "/recurring",
+            icon: RepeatIcon,
+        },
+        {
+            title: t(`${location}.budgets`),
+            url: "/budgets",
+            icon: TargetIcon,
         },
         {
             title: t(`${location}.stats`),

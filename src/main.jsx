@@ -18,6 +18,8 @@ import Transaction from './pages/Transaction';
 import Account from './pages/Account';
 import Profile from './pages/Profile';
 import Stats from './pages/Stats';
+import Recurring from './pages/Recurring';
+import Budgets from './pages/Budgets';
 import { getHealth, setMaintenanceHandler } from './api/client';
 
 const MAINTENANCE_POLL_MS = 30_000;
@@ -80,6 +82,8 @@ export default function Root() {
               <Route path="/account/:id" element={<Account />} />
               <Route path="/transaction" element={<Transaction />} />
               <Route path="/category" element={<Category />} />
+              <Route path="/recurring" element={<Recurring />} />
+              <Route path="/budgets" element={<Budgets />} />
               <Route path="/stats" element={<Stats />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<NotFound />} />

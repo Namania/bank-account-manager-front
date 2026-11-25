@@ -29,6 +29,12 @@ export function useBreadcrumbItems(path) {
         '/category': [
             { label: t(`${location}.category`) },
         ],
+        '/recurring': [
+            { label: t(`${location}.recurring`) },
+        ],
+        '/budgets': [
+            { label: t(`${location}.budgets`) },
+        ],
         '/stats': [
             { label: t(`${location}.stats`) },
         ],

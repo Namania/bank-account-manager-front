@@ -6,7 +6,9 @@
       "not-found": "Page introuvable",
       "transaction": "Transactions",
       "profile": "Mon compte",
-      "stats": "Statistiques"
+      "stats": "Statistiques",
+      "recurring": "Récurrentes",
+      "budgets": "Budgets"
     },
     "cancel": "Annuler",
     "create": "Créer",
@@ -302,6 +304,57 @@
       "title": "Détail par mois",
       "desc": "Les mêmes chiffres, en tableau.",
       "month": "Mois"
+    }
+  },
+  "recurring": {
+    "new": "Nouvelle récurrence",
+    "edit": "Modifier la récurrence",
+    "desc": "Une transaction est créée automatiquement à chaque échéance. La fréquence et la date de début ne changent plus après la création.",
+    "empty": "Aucune transaction récurrente",
+    "created": "Récurrence créée",
+    "updated": "Récurrence modifiée",
+    "invalid": "Récurrence refusée : vérifiez les champs (début au plus un an dans le passé).",
+    "movement": "Mouvement",
+    "frequency": "Fréquence",
+    "frequencies": {
+      "weekly": "Chaque semaine",
+      "monthly": "Chaque mois",
+      "yearly": "Chaque année"
+    },
+    "start_date": "Début",
+    "end_date": "Fin (facultative)",
+    "next_date": "Prochaine échéance",
+    "occurrences": "Créées",
+    "status": "État",
+    "active": "Active",
+    "paused": "En pause",
+    "pause": "Mettre en pause",
+    "resume": "Reprendre",
+    "actions": "Actions",
+    "delete": {
+      "title": "Supprimer la récurrence ?",
+      "desc": "Les transactions déjà créées sont conservées. Aucune nouvelle ne sera créée."
+    }
+  },
+  "budget": {
+    "new": "Nouveau budget",
+    "edit": "Modifier le budget",
+    "desc": "Un montant mensuel à ne pas dépasser pour une catégorie.",
+    "empty": "Aucun budget",
+    "created": "Budget créé",
+    "updated": "Budget modifié",
+    "amount": "Montant mensuel",
+    "spent": "Dépensé",
+    "of": "sur {{amount}}",
+    "remaining": "Reste {{amount}}",
+    "over": "Dépassé de {{amount}}",
+    "errors": {
+      "category": "Choisissez une catégorie.",
+      "exists": "Un budget existe déjà pour cette catégorie."
+    },
+    "delete": {
+      "title": "Supprimer le budget ?",
+      "desc": "Les transactions de la catégorie ne sont pas touchées."
     }
   }
 }

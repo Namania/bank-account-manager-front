@@ -46,6 +46,16 @@ export default function Layout() {
       icon: <PlusIcon />,
       langKey: "category.new",
       variant: "default"
+    },
+    "/recurring": {
+      icon: <PlusIcon />,
+      langKey: "recurring.new",
+      variant: "default"
+    },
+    "/budgets": {
+      icon: <PlusIcon />,
+      langKey: "budget.new",
+      variant: "default"
     }
   };
 

@@ -6,7 +6,9 @@
       "not-found": "Page not found",
       "transaction": "Transactions",
       "profile": "My account",
-      "stats": "Statistics"
+      "stats": "Statistics",
+      "recurring": "Recurring",
+      "budgets": "Budgets"
     },
     "cancel": "Cancel",
     "create": "Create",
@@ -301,6 +303,57 @@
       "title": "Month by month",
       "desc": "The same figures, as a table.",
       "month": "Month"
+    }
+  },
+  "recurring": {
+    "new": "New recurring transaction",
+    "edit": "Edit the recurring transaction",
+    "desc": "A transaction is created automatically on each due date. Frequency and start date cannot change after creation.",
+    "empty": "No recurring transaction",
+    "created": "Recurring transaction created",
+    "updated": "Recurring transaction updated",
+    "invalid": "Refused: check the fields (start at most one year in the past).",
+    "movement": "Movement",
+    "frequency": "Frequency",
+    "frequencies": {
+      "weekly": "Every week",
+      "monthly": "Every month",
+      "yearly": "Every year"
+    },
+    "start_date": "Start",
+    "end_date": "End (optional)",
+    "next_date": "Next due date",
+    "occurrences": "Created",
+    "status": "Status",
+    "active": "Active",
+    "paused": "Paused",
+    "pause": "Pause",
+    "resume": "Resume",
+    "actions": "Actions",
+    "delete": {
+      "title": "Delete the recurring transaction?",
+      "desc": "Transactions already created are kept. No new one will be created."
+    }
+  },
+  "budget": {
+    "new": "New budget",
+    "edit": "Edit the budget",
+    "desc": "A monthly amount not to exceed for a category.",
+    "empty": "No budget",
+    "created": "Budget created",
+    "updated": "Budget updated",
+    "amount": "Monthly amount",
+    "spent": "Spent",
+    "of": "of {{amount}}",
+    "remaining": "{{amount}} left",
+    "over": "Over by {{amount}}",
+    "errors": {
+      "category": "Choose a category.",
+      "exists": "A budget already exists for this category."
+    },
+    "delete": {
+      "title": "Delete the budget?",
+      "desc": "The category's transactions are not affected."
     }
   }
 }
