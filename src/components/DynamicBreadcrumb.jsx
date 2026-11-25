@@ -22,7 +22,7 @@ export function DynamicBreadcrumb({ items }) {
                                 {item.href ? (
                                     <Link className="hover:text-foreground" to={item.href}>{item.label}</Link>
                                     ) : (
-                                    <BreadcrumbPage className="block max-w-[45vw] truncate sm:max-w-none">{item.label}</BreadcrumbPage>
+                                    <BreadcrumbPage className="block max-w-[45vw] truncate sm:max-w-[40vw]" title={item.label}>{item.label}</BreadcrumbPage>
                                 )}
                             </BreadcrumbItem>
                         </SlideYAnimation>

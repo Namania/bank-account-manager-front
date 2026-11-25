@@ -230,14 +230,15 @@ export default function Account() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <SlideXAnimation delay={.2} className="flex">
           <Card className={`w-full shadow-lg overflow-hidden transition-colors ${tint.card}`}>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <SlideXAnimation delay={.4} className={`p-2 rounded-lg ${tint.chip}`}>
+            <CardHeader className="flex flex-row items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center space-x-3">
+                <SlideXAnimation delay={.4} className={`shrink-0 p-2 rounded-lg ${tint.chip}`}>
                   <User className="h-10 w-10" />
                 </SlideXAnimation>
-                <div className="flex flex-col gap-1">
-                  <FadeAnimation delay={.5}>
-                    <Label className="text-lg font-bold">
+                <div className="flex min-w-0 flex-col gap-1">
+                  <FadeAnimation delay={.5} className="min-w-0">
+                    {/* A long name ends with an ellipsis; the full name shows on hover. */}
+                    <Label className="block truncate text-lg font-bold" title={account.label}>
                       {account.label}
                     </Label>
                   </FadeAnimation>
@@ -248,7 +249,7 @@ export default function Account() {
                   </SlideYAnimation>
                 </div>
               </div>
-              <SlideXAnimation reverse delay={.5}>
+              <SlideXAnimation reverse delay={.5} className="shrink-0">
                 <DropdownMenu modal={false}>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" aria-label={t('core.actions')} size="icon-sm" className="bg-background/60">
