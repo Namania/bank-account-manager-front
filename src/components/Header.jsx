@@ -9,7 +9,7 @@ export default function Header({ breadcrumb, children }) {
     const count = React.Children.count(children);
     return (
         <header className="flex items-center justify-between gap-2 px-1 py-2 border-b bg-background">
-            <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+            <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-4">
                 <SlideXAnimation>
                     <SidebarTrigger />
                 </SlideXAnimation>
