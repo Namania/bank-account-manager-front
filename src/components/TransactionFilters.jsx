@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FilterIcon, XIcon } from "lucide-react";
+import { ChevronDownIcon, FilterIcon, XIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { EMPTY_FILTERS, hasFilters } from "@/lib/filters";
 
 const ALL = "all";
@@ -17,6 +18,9 @@ const ORDERINGS = ["-date", "date", "-amount", "amount", "-created_at", "created
 export default function TransactionFilters({ value, onChange, categories = [], accounts = null }) {
     const { t } = useTranslation();
     const [draft, setDraft] = useState(value);
+    // On a phone the form is folded away until asked for.
+    const [open, setOpen] = useState(false);
+    const active = Object.values(value).filter((item) => item !== "").length;
 
     const set = (key) => (next) => setDraft((current) => ({ ...current, [key]: next }));
     const setFromInput = (key) => (event) => set(key)(event.target.value);
@@ -25,6 +29,7 @@ export default function TransactionFilters({ value, onChange, categories = [], a
     const handleSubmit = (event) => {
         event.preventDefault();
         onChange(draft);
+        setOpen(false);
     };
 
     const handleReset = () => {
@@ -33,7 +38,22 @@ export default function TransactionFilters({ value, onChange, categories = [], a
     };
 
     return (
-        <form onSubmit={handleSubmit} className="rounded-md border bg-card p-4 grid gap-3 grid-cols-2 md:grid-cols-4 xl:grid-cols-8 items-end">
+        <div className="space-y-2">
+        <Button
+            type="button"
+            variant="outline"
+            className="md:hidden w-full justify-between"
+            aria-expanded={open}
+            aria-controls="transaction-filters"
+            onClick={() => setOpen((current) => !current)}
+        >
+            <span className="flex items-center gap-2"><FilterIcon /> {t("transaction.filters.title")}</span>
+            <span className="flex items-center gap-2">
+                {active > 0 && <Badge>{active}</Badge>}
+                <ChevronDownIcon className={`transition-transform ${open ? "rotate-180" : ""}`} />
+            </span>
+        </Button>
+        <form id="transaction-filters" onSubmit={handleSubmit} className={`rounded-md border bg-card p-4 gap-3 grid-cols-2 md:grid-cols-4 xl:grid-cols-8 items-end ${open ? "grid" : "hidden"} md:grid`}>
             <div className="space-y-1 col-span-2">
                 <Label htmlFor="filter-search">{t("transaction.filters.search")}</Label>
                 <Input id="filter-search" value={draft.search} maxLength={200} placeholder={t("transaction.filters.search_placeholder")} onChange={setFromInput("search")} />
@@ -103,5 +123,6 @@ export default function TransactionFilters({ value, onChange, categories = [], a
                 )}
             </div>
         </form>
+        </div>
     );
 }

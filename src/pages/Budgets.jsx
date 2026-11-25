@@ -196,7 +196,7 @@ export default function Budgets() {
     const taken = new Set(budgets.map((budget) => budget.category));
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-3 sm:p-6 space-y-6">
             <Dialog open={isModalOpen || editing !== null} onOpenChange={closeDialog}>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>

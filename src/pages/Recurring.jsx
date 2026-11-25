@@ -217,12 +217,34 @@ export default function Recurring() {
         return account.is_bank ? t("transaction.bank") : account.label;
     };
 
+    const ruleMenu = (rule) => (
+                                            <DropdownMenu modal={false}>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t("core.actions")}>
+                                                        <MoreHorizontalIcon />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent className="w-44" align="end">
+                                                    <DropdownMenuItem onSelect={() => setEditing(rule)}>
+                                                        <Edit /> {t("transaction.actions.edit")}
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem onSelect={() => togglePause(rule)}>
+                                                        {rule.is_active ? <PauseIcon /> : <PlayIcon />}
+                                                        {t(rule.is_active ? "recurring.pause" : "recurring.resume")}
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem onSelect={() => setToDelete(rule)} className="text-destructive">
+                                                        <Trash2Icon className="text-destructive" /> {t("transaction.actions.delete")}
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+    );
+
     if (isLoading) return null;
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-3 sm:p-6 space-y-6">
             <Dialog open={isModalOpen || editing !== null} onOpenChange={closeDialog}>
-                <DialogContent className="sm:max-w-[520px]">
+                <DialogContent className="sm:max-w-[520px] max-h-[90dvh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>{t(editing ? "recurring.edit" : "recurring.new")}</DialogTitle>
                         <DialogDescription>{t("recurring.desc")}</DialogDescription>
@@ -250,7 +272,38 @@ export default function Recurring() {
                 </FadeAnimation>
             ) : (
                 <FadeAnimation delay={.3}>
-                    <Card className="py-0 overflow-hidden">
+                    {/* Phone: one card per rule. */}
+                    <ul className="md:hidden space-y-2">
+                        {rules.map((rule) => (
+                            <li key={rule.id} className="rounded-xl border bg-card p-3">
+                                <div className="flex items-start gap-3">
+                                    <span aria-hidden="true" className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-chart-5/15 text-chart-5">
+                                        <RepeatIcon className="size-4" />
+                                    </span>
+                                    <div className="min-w-0 flex-1 space-y-1">
+                                        <div className="flex items-baseline justify-between gap-2">
+                                            <span className="truncate text-sm font-medium">{rule.comment || t(`recurring.frequencies.${rule.frequency}`)}</span>
+                                            <span className="shrink-0 text-sm font-bold tabular-nums">{formatMoney(rule.amount, language)}</span>
+                                        </div>
+                                        <div className="flex min-w-0 items-center gap-1.5 text-sm">
+                                            <Badge variant="outline" className="max-w-full"><span className="truncate">{sideLabel(rule.sender_details)}</span></Badge>
+                                            <ArrowRightIcon aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+                                            <Badge variant="outline" className="max-w-full"><span className="truncate">{sideLabel(rule.receiver_details)}</span></Badge>
+                                        </div>
+                                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                                            <span>{t(`recurring.frequencies.${rule.frequency}`)}</span>
+                                            {rule.next_date && <span>· {t("recurring.next_date")} : {formatDay(rule.next_date, language)}</span>}
+                                            <Badge variant={rule.is_active ? "secondary" : "outline"}>
+                                                {t(rule.is_active ? "recurring.active" : "recurring.paused")}
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                    {ruleMenu(rule)}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                    <Card className="hidden md:flex py-0 overflow-hidden">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -294,25 +347,7 @@ export default function Recurring() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-end">
-                                            <DropdownMenu modal={false}>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t("core.actions")}>
-                                                        <MoreHorizontalIcon />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent className="w-44" align="end">
-                                                    <DropdownMenuItem onSelect={() => setEditing(rule)}>
-                                                        <Edit /> {t("transaction.actions.edit")}
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem onSelect={() => togglePause(rule)}>
-                                                        {rule.is_active ? <PauseIcon /> : <PlayIcon />}
-                                                        {t(rule.is_active ? "recurring.pause" : "recurring.resume")}
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem onSelect={() => setToDelete(rule)} className="text-destructive">
-                                                        <Trash2Icon className="text-destructive" /> {t("transaction.actions.delete")}
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
+                                            {ruleMenu(rule)}
                                         </TableCell>
                                     </TableRow>
                                 ))}

@@ -12,10 +12,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { ArrowDownLeftIcon, ArrowLeftRightIcon, ArrowUpRightIcon, Edit, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
+import { ArrowDownLeftIcon, ArrowLeftRightIcon, ArrowRightIcon, ArrowUpRightIcon, Edit, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog";
 import TransactionDialog from "./TransactionDialog";
+import ConfirmDialog from "./ConfirmDialog";
 import { formatDay, formatMoney } from "@/lib/format";
 
 // A transaction is read-only once one of its accounts is deactivated. The API
@@ -23,6 +23,22 @@ import { formatDay, formatMoney } from "@/lib/format";
 const isLocked = (tx) => [tx.sender_details, tx.receiver_details].some(
     (account) => account && !account.is_bank && !account.is_active
 );
+
+// Where the money goes: in from the bank, out to the bank, or between accounts.
+const directionOf = (tx) => {
+    if (tx.sender_details?.is_bank) return { sign: '+', chip: 'bg-chart-2/15 text-chart-2', Icon: ArrowDownLeftIcon };
+    if (tx.receiver_details?.is_bank) return { sign: '−', chip: 'bg-chart-1/15 text-chart-1', Icon: ArrowUpRightIcon };
+    return { sign: '', chip: 'bg-chart-3/15 text-chart-3', Icon: ArrowLeftRightIcon };
+};
+
+function DirectionChip({ tx, className = "size-8" }) {
+    const { chip, Icon } = directionOf(tx);
+    return (
+        <span aria-hidden="true" className={`flex shrink-0 items-center justify-center rounded-lg ${chip} ${className}`}>
+            <Icon className="size-4" />
+        </span>
+    );
+}
 
 // One side of a transaction. The account may have been removed (null) or deactivated.
 function AccountBadge({ account }) {
@@ -36,15 +52,59 @@ function AccountBadge({ account }) {
         <Badge
             variant="outline"
             title={inactive ? t('transaction.inactive_account') : undefined}
-            className={`font-medium ${account.is_bank ? 'text-muted-foreground' : ''} ${inactive ? 'line-through text-muted-foreground' : ''}`}
+            className={`font-medium max-w-full ${account.is_bank ? 'text-muted-foreground' : ''} ${inactive ? 'line-through text-muted-foreground' : ''}`}
         >
-            {account.is_bank ? t('transaction.bank') : account.label}
+            <span className="truncate">{account.is_bank ? t('transaction.bank') : account.label}</span>
         </Badge>
     );
 }
 
+function CategoryBadge({ category }) {
+    const { t } = useTranslation();
+
+    if (!category) {
+        return <span className="text-muted-foreground text-xs italic">{t('transaction.no_category')}</span>;
+    }
+    return (
+        <Badge
+            variant="outline"
+            className="font-medium"
+            style={{ borderColor: category.color, color: category.color, backgroundColor: `${category.color}10` }}
+        >
+            {category.label}
+        </Badge>
+    );
+}
+
+function RowMenu({ locked, onEdit, onDelete }) {
+    const { t } = useTranslation();
+
+    return (
+        <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="size-9 shrink-0" aria-label={t('core.actions')}>
+                    <MoreHorizontalIcon />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-40" align="end">
+                <DropdownMenuItem onSelect={onEdit} disabled={locked}>
+                    <Edit /> {t('transaction.actions.edit')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={onDelete} className="text-destructive" disabled={locked}>
+                    <Trash2Icon className="text-destructive" /> {t('transaction.actions.delete')}
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+}
+
+/**
+ * Transactions as a table on wide screens and as a list of cards on a phone,
+ * where a seven-column table cannot fit.
+ */
 export default function TransactionList({ transactions, setTransactions, updateAccount = null, accounts = [], bank = null, categories = [] }) {
     const { t, i18n } = useTranslation();
+    const language = i18n.language;
     const [current, setCurrent] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
@@ -80,27 +140,20 @@ export default function TransactionList({ transactions, setTransactions, updateA
         }
     };
 
+    const edit = (tx) => () => { setCurrent(tx); setIsEditOpen(true); };
+    const remove = (tx) => () => { setCurrent(tx); setIsModalOpen(true); };
+    const amountOf = (tx) => `${directionOf(tx).sign}${formatMoney(tx.amount, language)}`;
+    const noteOf = (tx) => (tx.is_opening ? t('transaction.opening') : tx.comment);
+
     return (
-        <div className="rounded-md border bg-card">
-            <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>{t('transaction.delete.title')}</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            {t('transaction.delete.desc')}
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>{t('core.cancel')}</AlertDialogCancel>
-                            <AlertDialogAction
-                                onClick={confirmDelete}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                            >
-                            {t('core.delete')}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+        <>
+            <ConfirmDialog
+                open={isModalOpen}
+                onOpenChange={setIsModalOpen}
+                title={t('transaction.delete.title')}
+                description={t('transaction.delete.desc')}
+                onConfirm={confirmDelete}
+            />
             {current && (
                 <TransactionDialog
                     open={isEditOpen}
@@ -113,32 +166,55 @@ export default function TransactionList({ transactions, setTransactions, updateA
                     onSaved={handleUpdated}
                 />
             )}
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-[100px]">{t('transaction.table.id')}</TableHead>
-                        <TableHead>{t('transaction.table.sender')}</TableHead>
-                        <TableHead>{t('transaction.table.receiver')}</TableHead>
-                        <TableHead>{t('transaction.table.category')}</TableHead>
-                        <TableHead>{t('transaction.table.amount')}</TableHead>
-                        <TableHead>{t('transaction.table.date')}</TableHead>
-                        <TableHead>{t('transaction.table.description')}</TableHead>
-                        <TableHead></TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {transactions.map((tx) => {
-                        const fromBank = Boolean(tx.sender_details?.is_bank);
-                        const toBank = Boolean(tx.receiver_details?.is_bank);
-                        const locked = isLocked(tx);
 
-                        return (
+            {/* Phone: one card per transaction. */}
+            <ul className="md:hidden space-y-2">
+                {transactions.map((tx) => (
+                    <li key={tx.id} className="rounded-xl border bg-card p-3">
+                        <div className="flex items-start gap-3">
+                            <DirectionChip tx={tx} className="size-10" />
+                            <div className="min-w-0 flex-1 space-y-1">
+                                <div className="flex items-baseline justify-between gap-2">
+                                    <span className="truncate text-sm font-medium">{noteOf(tx) || t('transaction.untitled')}</span>
+                                    <span className="shrink-0 text-sm font-bold tabular-nums">{amountOf(tx)}</span>
+                                </div>
+                                <div className="flex min-w-0 items-center gap-1.5">
+                                    <AccountBadge account={tx.sender_details} />
+                                    <ArrowRightIcon aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+                                    <AccountBadge account={tx.receiver_details} />
+                                </div>
+                                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                                    <span>{formatDay(tx.date, language)}</span>
+                                    <CategoryBadge category={tx.category_details} />
+                                </div>
+                            </div>
+                            <RowMenu locked={isLocked(tx)} onEdit={edit(tx)} onDelete={remove(tx)} />
+                        </div>
+                    </li>
+                ))}
+            </ul>
+
+            {/* Wider screens: the full table. */}
+            <div className="hidden md:block rounded-md border bg-card">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[100px]">{t('transaction.table.id')}</TableHead>
+                            <TableHead>{t('transaction.table.sender')}</TableHead>
+                            <TableHead>{t('transaction.table.receiver')}</TableHead>
+                            <TableHead>{t('transaction.table.category')}</TableHead>
+                            <TableHead>{t('transaction.table.amount')}</TableHead>
+                            <TableHead>{t('transaction.table.date')}</TableHead>
+                            <TableHead>{t('transaction.table.description')}</TableHead>
+                            <TableHead></TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {transactions.map((tx) => (
                             <TableRow key={tx.id} className="hover:bg-muted/50 transition-colors">
                                 <TableCell>
                                     <span className="flex items-center gap-2">
-                                        <span aria-hidden="true" className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${fromBank ? 'bg-chart-2/15 text-chart-2' : toBank ? 'bg-chart-1/15 text-chart-1' : 'bg-chart-3/15 text-chart-3'}`}>
-                                            {fromBank ? <ArrowDownLeftIcon className="size-4" /> : toBank ? <ArrowUpRightIcon className="size-4" /> : <ArrowLeftRightIcon className="size-4" />}
-                                        </span>
+                                        <DirectionChip tx={tx} />
                                         <span className="font-mono text-xs text-muted-foreground">#{tx.id}</span>
                                     </span>
                                 </TableCell>
@@ -149,27 +225,13 @@ export default function TransactionList({ transactions, setTransactions, updateA
                                     <AccountBadge account={tx.receiver_details} />
                                 </TableCell>
                                 <TableCell>
-                                    {tx.category_details ? (
-                                        <Badge
-                                            variant="outline"
-                                            className="font-medium"
-                                            style={{
-                                                borderColor: tx.category_details.color,
-                                                color: tx.category_details.color,
-                                                backgroundColor: `${tx.category_details.color}10`
-                                            }}
-                                        >
-                                            {tx.category_details.label}
-                                        </Badge>
-                                    ) : (
-                                        <span className="text-muted-foreground text-xs italic">{t('transaction.no_category')}</span>
-                                    )}
+                                    <CategoryBadge category={tx.category_details} />
                                 </TableCell>
                                 <TableCell className="font-bold text-sm tabular-nums">
-                                    {toBank ? '−' : fromBank ? '+' : ''}{formatMoney(tx.amount, i18n.language)}
+                                    {amountOf(tx)}
                                 </TableCell>
                                 <TableCell className="text-sm">
-                                    {formatDay(tx.date, i18n.language)}
+                                    {formatDay(tx.date, language)}
                                 </TableCell>
                                 <TableCell className="max-w-[200px] truncate text-sm">
                                     {tx.is_opening
@@ -177,33 +239,13 @@ export default function TransactionList({ transactions, setTransactions, updateA
                                         : tx.comment || "-"}
                                 </TableCell>
                                 <TableCell className="text-end">
-                                    <DropdownMenu modal={false}>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t('core.actions')}>
-                                                <MoreHorizontalIcon />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="w-40" align="end">
-                                            <DropdownMenuItem onSelect={() => {
-                                                setCurrent(tx);
-                                                setIsEditOpen(true);
-                                            }} disabled={locked}>
-                                                <Edit /> {t('transaction.actions.edit')}
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onSelect={() => {
-                                                setCurrent(tx);
-                                                setIsModalOpen(true);
-                                            }} className="text-destructive" disabled={locked}>
-                                                <Trash2Icon className="text-destructive" /> {t('transaction.actions.delete')}
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <RowMenu locked={isLocked(tx)} onEdit={edit(tx)} onDelete={remove(tx)} />
                                 </TableCell>
                             </TableRow>
-                        );
-                    })}
-                </TableBody>
-            </Table>
-        </div>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        </>
     );
 }

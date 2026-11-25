@@ -155,7 +155,7 @@ export default function Account() {
 
   if (isLoading) {
     return (
-      <div className="p-6 grid gap-6 md:grid-cols-3">
+      <div className="p-3 sm:p-6 grid gap-6 md:grid-cols-3">
         <Skeleton className="h-[300px] md:col-span-1 rounded-xl" />
         <Skeleton className="h-[300px] md:col-span-2 rounded-xl" />
         <Skeleton className="h-[400px] md:col-span-3 rounded-xl" />
@@ -173,7 +173,7 @@ export default function Account() {
   const hasTransactions = transactionsData.results.length > 0;
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-3 sm:p-6 space-y-8">
       <AlertDialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

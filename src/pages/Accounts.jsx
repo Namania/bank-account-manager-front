@@ -44,7 +44,7 @@ export default function Accounts() {
 
   if (isLoading) {
     return (
-      <div className="p-4 space-y-6">
+      <div className="p-3 sm:p-4 space-y-6">
         <Skeleton className="h-36 rounded-xl" />
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(260px,1fr))]">
           <Skeleton className="h-32 rounded-xl" />
@@ -58,7 +58,7 @@ export default function Accounts() {
   const total = accounts.reduce((sum, account) => sum + parseFloat(account.balance), 0);
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="p-3 sm:p-4 space-y-6">
       <CreateAccountDialog
         open={isModalOpen}
         onOpenChange={setIsModalOpen}

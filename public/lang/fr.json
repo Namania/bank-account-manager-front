@@ -272,10 +272,12 @@
         "amount": "Montant croissant",
         "-created_at": "Saisie, récentes d'abord",
         "created_at": "Saisie, anciennes d'abord"
-      }
+      },
+      "title": "Filtres"
     },
     "new_desc": "Choisissez les deux comptes, le montant et la date.",
-    "no_bank": "Crédit et débit indisponibles : le compte banque n'existe pas encore sur le serveur."
+    "no_bank": "Crédit et débit indisponibles : le compte banque n'existe pas encore sur le serveur.",
+    "untitled": "Sans description"
   },
   "profile": {
     "info": {

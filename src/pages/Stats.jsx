@@ -106,7 +106,7 @@ export default function Stats() {
     const hasActivity = months.some((month) => parseFloat(month.income) > 0 || parseFloat(month.expense) > 0);
 
     return (
-        <FadeAnimation delay={.2} className="p-6 space-y-6">
+        <FadeAnimation delay={.2} className="p-3 sm:p-6 space-y-6">
             <div className="flex flex-wrap gap-3 items-end">
                 <div className="space-y-1">
                     <Label htmlFor="stats-from">{t("transaction.filters.date_from")}</Label>

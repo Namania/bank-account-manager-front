@@ -79,7 +79,7 @@ export default function Category() {
     }, [t]);
 
     return isLoading ? (<></>) : (
-        <div className="h-full p-6 space-y-6">
+        <div className="h-full p-3 sm:p-6 space-y-6">
             <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>

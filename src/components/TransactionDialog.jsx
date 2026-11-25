@@ -46,7 +46,7 @@ export default function TransactionDialog({ open, onOpenChange, mode, ...props }
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] max-h-[90dvh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>{t(TITLES[mode] ?? TITLES.transfer)}</DialogTitle>
                     <DialogDescription>

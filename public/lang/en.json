@@ -267,14 +267,16 @@
         "amount": "Amount, low to high",
         "-created_at": "Entered, newest first",
         "created_at": "Entered, oldest first"
-      }
+      },
+      "title": "Filters"
     },
     "actions": {
       "delete": "Delete",
       "edit": "Edit"
     },
     "new_desc": "Choose both accounts, the amount and the date.",
-    "no_bank": "Credit and debit are unavailable: the bank account does not exist on the server yet."
+    "no_bank": "Credit and debit are unavailable: the bank account does not exist on the server yet.",
+    "untitled": "No description"
   },
   "profile": {
     "info": {

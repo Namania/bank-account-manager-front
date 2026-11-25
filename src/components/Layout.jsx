@@ -70,20 +70,20 @@ export default function Layout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex-1 p-2 flex flex-col min-h-screen">
+      <main className="flex-1 min-w-0 p-1 sm:p-2 flex flex-col min-h-screen">
         <Header breadcrumb={ <DynamicBreadcrumb items={breadcrumbItems} /> } >
           {
             !["/profile", "/stats"].includes(path)
               ? <SlideYAnimation>
-                <Button variant={current.variant} onClick={() => setIsModalOpen(true)}>
+                <Button variant={current.variant} onClick={() => setIsModalOpen(true)} aria-label={t(current.langKey)} className="max-sm:size-9 max-sm:px-0">
                   {current.icon}
-                  { t(current.langKey) }
+                  <span className="max-sm:hidden">{ t(current.langKey) }</span>
                 </Button>
               </SlideYAnimation>
               : null
           }
         </Header>
-        <PageTransition className="p-2 flex-1">
+        <PageTransition className="p-1 sm:p-2 flex-1 min-w-0">
           <Outlet context={{ isModalOpen, setIsModalOpen, setPageLabel }} />
         </PageTransition>
       </main>

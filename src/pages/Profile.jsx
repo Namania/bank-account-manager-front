@@ -187,7 +187,7 @@ export default function Profile() {
     const { user } = useAuth();
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-3 sm:p-6 space-y-6">
             <FadeAnimation>
                 <Card className="bg-chart-3/10 border-chart-3/25">
                     <CardContent className="flex items-center gap-4">
