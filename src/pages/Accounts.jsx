@@ -10,9 +10,10 @@ import { CreateAccountDialog } from "@/components/CreateAccountDialog";
 import { toast } from "sonner";
 import SlideXAnimation from "@/components/animation/SlideXAnimation";
 import FadeAnimation from "@/components/animation/FadeAnimation";
+import { formatMoney } from "@/lib/format";
 
 export default function Accounts() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [accounts, setAccounts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -72,15 +73,9 @@ export default function Accounts() {
                     <Wallet className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardFooter className="mt-auto pt-0">
-                    {
-                      account.balance >= 0 ?
-                        <Badge className={`text-1xl bg-emerald-500 text-forground`}>
-                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(parseFloat(account.balance))}
-                        </Badge>
-                        : <Badge className={`text-1xl bg-red-800 text-forground`}>
-                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(parseFloat(account.balance))}
-                        </Badge>
-                    }
+                    <Badge className={`text-1xl text-forground ${parseFloat(account.balance) >= 0 ? 'bg-emerald-500' : 'bg-red-800'}`}>
+                      {formatMoney(account.balance, i18n.language)}
+                    </Badge>
                   </CardFooter>
                 </Card>
               </Link>

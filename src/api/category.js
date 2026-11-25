@@ -4,7 +4,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const getCategories = async () => {
     const response = await client.get(`${API_URL}/categories/`);
-    return response.data.results;
+    // A plain array; older API versions wrapped it in a page object.
+    return response.data.results ?? response.data;
 };
 
 export const createCategory = async (data) => {
@@ -14,7 +15,7 @@ export const createCategory = async (data) => {
 
 export const deleteCategory = async (id) => {
     const response = await client.delete(`${API_URL}/categories/${id}/`);
-    return response.data.results;
+    return response.data;
 };
 
 export const updateCategory = async (id, data) => {

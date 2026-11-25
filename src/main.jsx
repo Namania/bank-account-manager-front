@@ -16,6 +16,7 @@ import Category from './pages/Categories';
 import { Toaster } from './components/ui/sonner';
 import Transaction from './pages/Transaction';
 import Account from './pages/Account';
+import Profile from './pages/Profile';
 
 export default function Root() {
   const [maintenance, setMaintenance] = useState(null);
@@ -61,6 +62,7 @@ export default function Root() {
               <Route path="/account/:id" element={<Account />} />
               <Route path="/transaction" element={<Transaction />} />
               <Route path="/category" element={<Category />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<NotFound />} />
             </Route>
 

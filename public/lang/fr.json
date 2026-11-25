@@ -4,7 +4,8 @@
       "accounts": "Comptes",
       "category": "Catégories",
       "not-found": "Page introuvable",
-      "transaction": "Transactions"
+      "transaction": "Transactions",
+      "profile": "Mon compte"
     },
     "cancel": "Annuler",
     "create": "Créer",
@@ -56,7 +57,8 @@
       "light": "Clair",
       "dark": "Sombre",
       "system": "Système"
-    }
+    },
+    "save": "Enregistrer"
   },
   "account": {
     "created": "Compte créé avec succès",
@@ -98,7 +100,8 @@
       "empty_title": "Graphique d'évolution",
       "empty_desc": "Les données seront disponibles après vos premières transactions",
       "title": "Évolution du solde",
-      "desc": "Visualisation des flux sur la période"
+      "desc": "Visualisation des flux sur la période",
+      "balance": "Solde"
     },
     "transactions": {
       "empty": "Aucune transaction",
@@ -118,7 +121,13 @@
         "receiver_placeholder": "Sélectionnez un destinataire"
       }
     },
-    "new": "Nouveau Compte"
+    "new": "Nouveau Compte",
+    "rename": {
+      "label": "Renommer",
+      "title": "Renommer le compte",
+      "desc": "Choisissez le nouveau nom du compte.",
+      "success": "Compte renommé"
+    }
   },
   "category": {
     "actions": {
@@ -153,7 +162,8 @@
       "send": "Créer"
     },
     "first": "Ajouter une catégorie",
-    "new": "Nouvelle Catégorie"
+    "new": "Nouvelle Catégorie",
+    "shared": "Partagée"
   },
   "transaction": {
     "locked": "Transaction verrouillée : l'un de ses comptes ne vous appartient pas ou a été désactivé.",
@@ -171,6 +181,46 @@
     "actions": {
       "delete": "Supprimer",
       "edit": "Modifier"
+    },
+    "updated": "Transaction modifiée",
+    "invalid": "Transaction refusée : vérifiez les champs.",
+    "same_account": "L'expéditeur et le destinataire doivent être différents.",
+    "no_category": "Sans catégorie",
+    "opening": "Ouverture du compte",
+    "bank": "Banque",
+    "deleted_account": "Compte supprimé",
+    "inactive_account": "Compte désactivé",
+    "edit": {
+      "title": "Modifier la transaction",
+      "desc": "Les soldes des comptes concernés sont recalculés."
+    },
+    "delete": {
+      "title": "Supprimer la transaction ?",
+      "desc": "Cette action est irréversible. Les soldes des comptes concernés sont recalculés."
+    },
+    "fields": {
+      "sender_placeholder": "Sélectionnez un expéditeur"
+    }
+  },
+  "profile": {
+    "info": {
+      "title": "Informations",
+      "desc": "Votre nom d'utilisateur et votre adresse e-mail.",
+      "email": "Adresse e-mail",
+      "success": "Profil mis à jour"
+    },
+    "password": {
+      "title": "Mot de passe",
+      "desc": "Le changement déconnecte vos autres sessions.",
+      "current": "Mot de passe actuel",
+      "new": "Nouveau mot de passe",
+      "confirm": "Confirmer le nouveau mot de passe",
+      "submit": "Changer le mot de passe",
+      "success": "Mot de passe modifié",
+      "errors": {
+        "current": "Le mot de passe actuel est incorrect.",
+        "mismatch": "Les deux nouveaux mots de passe ne correspondent pas."
+      }
     }
   }
 }

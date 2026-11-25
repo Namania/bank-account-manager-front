@@ -59,7 +59,7 @@ export default function Layout() {
       <main className="flex-1 p-2 flex flex-col min-h-screen">
         <Header breadcrumb={ <DynamicBreadcrumb items={breadcrumbItems} /> } >
           {
-            path !== "/transaction"
+            !["/transaction", "/profile"].includes(path)
               ? <SlideYAnimation>
                 <Button variant={current.variant} onClick={() => setIsModalOpen(true)}>
                   {current.icon}

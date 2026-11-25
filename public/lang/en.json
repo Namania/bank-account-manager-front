@@ -4,7 +4,8 @@
       "accounts": "Accounts",
       "category": "Categories",
       "not-found": "Page not found",
-      "transaction": "Transactions"
+      "transaction": "Transactions",
+      "profile": "My account"
     },
     "cancel": "Cancel",
     "create": "Create",
@@ -55,7 +56,8 @@
       "light": "Light",
       "dark": "Dark",
       "system": "System"
-    }
+    },
+    "save": "Save"
   },
   "account": {
     "created": "Account created",
@@ -97,7 +99,8 @@
       "empty_title": "Trend graph",
       "empty_desc": "The data will be available after your first transactions.",
       "title": "Change in balance",
-      "desc": "Visualization of flows over the period"
+      "desc": "Visualization of flows over the period",
+      "balance": "Balance"
     },
     "transactions": {
       "empty": "No transaction",
@@ -117,7 +120,13 @@
         "receiver_placeholder": "Select a receiver"
       }
     },
-    "new": "New Account"
+    "new": "New Account",
+    "rename": {
+      "label": "Rename",
+      "title": "Rename the account",
+      "desc": "Choose the new name of the account.",
+      "success": "Account renamed"
+    }
   },
   "category": {
     "actions": {
@@ -152,7 +161,8 @@
       "send": "Create"
     },
     "first": "Add your first category",
-    "new": "New Categorie"
+    "new": "New Categorie",
+    "shared": "Shared"
   },
   "transaction": {
     "locked": "Locked transaction: one of its accounts is not yours or has been deactivated.",
@@ -166,6 +176,46 @@
       "id": "Id",
       "receiver": "Receiver",
       "sender": "Sender"
+    },
+    "updated": "Transaction updated",
+    "invalid": "Transaction refused: check the fields.",
+    "same_account": "Sender and receiver must be different.",
+    "no_category": "No category",
+    "opening": "Account opening",
+    "bank": "Bank",
+    "deleted_account": "Deleted account",
+    "inactive_account": "Deactivated account",
+    "edit": {
+      "title": "Edit the transaction",
+      "desc": "The balances of the accounts involved are recalculated."
+    },
+    "delete": {
+      "title": "Delete the transaction?",
+      "desc": "This cannot be undone. The balances of the accounts involved are recalculated."
+    },
+    "fields": {
+      "sender_placeholder": "Select a sender"
+    }
+  },
+  "profile": {
+    "info": {
+      "title": "Details",
+      "desc": "Your username and e-mail address.",
+      "email": "E-mail address",
+      "success": "Profile updated"
+    },
+    "password": {
+      "title": "Password",
+      "desc": "Changing it signs your other sessions out.",
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm the new password",
+      "submit": "Change password",
+      "success": "Password changed",
+      "errors": {
+        "current": "The current password is incorrect.",
+        "mismatch": "The two new passwords do not match."
+      }
     }
   }
 }

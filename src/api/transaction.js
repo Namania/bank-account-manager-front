@@ -17,6 +17,11 @@ export const createTransaction = async (data) => {
     return response.data;
 }
 
+export const updateTransaction = async (id, data) => {
+    const response = await client.patch(`${API_URL}/transactions/${id}/`, data);
+    return response.data;
+}
+
 export const deleteTransaction = async (id) => {
     const response = await client.delete(`${API_URL}/transactions/${id}/`);
     return response.data;

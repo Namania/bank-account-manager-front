@@ -48,7 +48,7 @@ export function CreateCategoryDialog({ open, onOpenChange, onCreated }) {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                         <Label>{ t('category.fields.label') }</Label>
-                        <Input value={label} onChange={(e) => setLabel(e.target.value)} required />
+                        <Input value={label} maxLength={200} onChange={(e) => setLabel(e.target.value)} required />
                     </div>
                     <div className="space-y-2">
                         <Label>{ t('category.fields.color') }</Label>

@@ -21,10 +21,12 @@ import {
 
 import { useTranslation } from "react-i18next"
 import { useAuth } from "@/auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export function NavUser() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   if (!user) return null;
   const initial = user.username?.charAt(0).toUpperCase() || "U";
@@ -69,7 +71,7 @@ export function NavUser() {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => navigate('/profile')}>
             <User2Icon className="mr-2 size-4" />
             { t('core.nav.account') }
           </DropdownMenuItem>

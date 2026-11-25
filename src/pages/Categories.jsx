@@ -135,6 +135,9 @@ export default function Category() {
                                         <CardTitle className="text-sm font-semibold">
                                             {category.label}
                                         </CardTitle>
+                                        {category.owner == null && (
+                                            <Badge variant="secondary" className="text-[10px]">{t('category.shared')}</Badge>
+                                        )}
                                     </div>
                                     {canEdit(category) && <DropdownMenu>
                                         <DropdownMenuTrigger asChild>

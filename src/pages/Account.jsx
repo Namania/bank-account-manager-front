@@ -6,152 +6,56 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { MoreHorizontalIcon, User, Wallet, PlusIcon, MinusIcon, LucideGitCompareArrows } from "lucide-react";
+import { MoreHorizontalIcon, User, Wallet, PlusIcon, MinusIcon, LucideGitCompareArrows, PencilIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { createTransaction, getTransactionsById } from "@/api/transaction";
+import { getTransactionsById } from "@/api/transaction";
 import TransactionList from "@/components/TransactionList";
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import TransactionDialog from "@/components/TransactionDialog";
+import RenameAccountDialog from "@/components/RenameAccountDialog";
+import ListPagination from "@/components/ListPagination";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getCategories } from "@/api/category";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TransactionChart } from "@/components/TransactionChart";
-import { Textarea } from "@/components/ui/textarea";
 import SlideYAnimation from "@/components/animation/SlideYAnimation";
 import FadeAnimation from "@/components/animation/FadeAnimation";
 import SlideXAnimation from "@/components/animation/SlideXAnimation";
+import { formatMoney } from "@/lib/format";
 
-// Amounts travel in euros, as a strictly positive 2-decimal string.
-const toEuros = (value) => {
-  const amount = parseFloat(value);
-  return amount > 0 ? amount.toFixed(2) : null;
-};
+const PAGE_SIZE = 100;
 
 export default function Account() {
   const { id } = useParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { isModalOpen, setIsModalOpen } = useOutletContext();
 
-  const [bankId, setBankId] = useState(null);
-  const [amount, setAmount] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedReceiver, setSelectedReceiver] = useState("");
-  const [description, setDescription] = useState("");
-
   const [account, setAccount] = useState(null);
-  const [accounts, setAccounts] = useState(null);
+  const [accounts, setAccounts] = useState([]);
+  const [bank, setBank] = useState(null);
   const [transactionsData, setTransactionsData] = useState({ results: [], count: 0 });
-  const [categories, setCategories] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [showCreditDialog, setShowCreditDialog] = useState(false);
-  const [showDebitDialog, setShowDebitDialog] = useState(false);
-  const [showTransactionDialog, setShowTransactionDialog] = useState(false);
-
-  const handleCredit = async (e) => {
-    e.preventDefault();
-    const euros = toEuros(amount);
-    if (!euros) return toast.error(t('account.transactions.invalid_amount'));
-
-    try {
-      const response = await createTransaction({
-        sender: bankId,
-        receiver: account.id,
-        amount: euros,
-        category: selectedCategory,
-        comment: description,
-      });
-
-      setTransactionsData((prev) => ({
-        ...prev,
-        count: prev.count + 1,
-        results: [response, ...prev.results]
-      }));
-      handleOpenChange(setShowCreditDialog, false);
-      updateAccount();
-
-      toast.success(t('transaction.created'));
-    } catch {
-      toast.error(t('core.fetch_error'));
-    }
-  };
-
-  const handleDebit = async (e) => {
-    e.preventDefault();
-    const euros = toEuros(amount);
-    if (!euros) return toast.error(t('account.transactions.invalid_amount'));
-
-    try {
-      const response = await createTransaction({
-        sender: account.id,
-        receiver: bankId,
-        amount: euros,
-        category: selectedCategory,
-        comment: description,
-      });
-
-      setTransactionsData((prev) => ({
-        ...prev,
-        count: prev.count + 1,
-        results: [response, ...prev.results]
-      }));
-      handleOpenChange(setShowDebitDialog, false);
-      updateAccount();
-
-      toast.success(t('transaction.created'));
-    } catch {
-      toast.error(t('core.fetch_error'));
-    }
-  };
-
-  const handleOver = async (e) => {
-    e.preventDefault();
-    const euros = toEuros(amount);
-    if (!euros) return toast.error(t('account.transactions.invalid_amount'));
-
-    try {
-      const response = await createTransaction({
-        sender: account.id,
-        receiver: selectedReceiver,
-        amount: euros,
-        category: selectedCategory,
-        comment: description,
-      });
-
-      setTransactionsData((prev) => ({
-        ...prev,
-        count: prev.count + 1,
-        results: [response, ...prev.results]
-      }));
-      handleOpenChange(setShowTransactionDialog, false);
-      updateAccount();
-
-      toast.success(t('transaction.created'));
-    } catch {
-      toast.error(t('core.fetch_error'));
-    }
-  };
-
-  const handleOpenChange = (callback, open) => {
-    if (!open) {
-      callback(false);
-      setAmount(0);
-      setSelectedCategory("");
-      setSelectedReceiver("");
-      setDescription("");
-    }
-  }
+  // "credit", "debit" or "transfer" while the transaction dialog is open.
+  const [transactionMode, setTransactionMode] = useState(null);
+  const [showRenameDialog, setShowRenameDialog] = useState(false);
 
   const updateAccount = async () => {
     setAccount(await getAccount(id));
-  }
+  };
+
+  const handleCreated = (created) => {
+    setTransactionsData((prev) => ({
+      ...prev,
+      count: prev.count + 1,
+      results: [created, ...prev.results]
+    }));
+    updateAccount();
+  };
 
   const confirmDelete = async () => {
     if (!id) return;
@@ -169,7 +73,7 @@ export default function Account() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [accountRes, accountsRes, transRes, cat, bank] = await Promise.all([
+        const [accountRes, accountsRes, transRes, cat, bankRes] = await Promise.all([
           getAccount(id),
           getAccounts(),
           getTransactionsById(id, 1),
@@ -185,7 +89,7 @@ export default function Account() {
         setAccounts(accountsRes);
         setTransactionsData(transRes);
         setCategories(cat);
-        setBankId(bank.id);
+        setBank(bankRes);
       } catch {
         toast.error(t('core.fetch_error'));
       } finally {
@@ -221,7 +125,12 @@ export default function Account() {
     );
   }
 
-  const totalPages = Math.ceil(transactionsData.count / 100);
+  // The request failed: the error toast is already shown.
+  if (!account) return null;
+
+  const totalPages = Math.ceil(transactionsData.count / PAGE_SIZE);
+  const isShared = account.owners.length > 1;
+  const isPositive = parseFloat(account.balance) >= 0;
 
   return (
     <div className="p-6 space-y-8">
@@ -245,6 +154,23 @@ export default function Account() {
         </AlertDialogContent>
       </AlertDialog>
 
+      <TransactionDialog
+        open={transactionMode !== null}
+        onOpenChange={(open) => { if (!open) setTransactionMode(null); }}
+        mode={transactionMode ?? "transfer"}
+        account={account}
+        accounts={accounts}
+        bank={bank}
+        categories={categories}
+        onSaved={handleCreated}
+      />
+      <RenameAccountDialog
+        open={showRenameDialog}
+        onOpenChange={setShowRenameDialog}
+        account={account}
+        onRenamed={setAccount}
+      />
+
       <div className="flex items-center justify-between mb-6">
         <SlideYAnimation delay={.2} className="text-2xl font-bold tracking-tight">{t('account.info.title')}</SlideYAnimation>
       </div>
@@ -263,8 +189,8 @@ export default function Account() {
                     </Label>
                   </FadeAnimation>
                   <SlideYAnimation reverse delay={.3}>
-                    <Badge variant={account.owners.length > 1 ? 'secondary' : 'outlined'} className={account.owners.length > 1 ? 'bg-blue-500 dark:bg-blue-600' : ''}>
-                      {account.owners.length > 1 ? t('account.info.shared') : t('account.info.personal')}
+                    <Badge variant={isShared ? 'secondary' : 'outlined'} className={isShared ? 'bg-blue-500 dark:bg-blue-600' : ''}>
+                      {isShared ? t('account.info.shared') : t('account.info.personal')}
                     </Badge>
                   </SlideYAnimation>
                 </div>
@@ -277,239 +203,34 @@ export default function Account() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-40" align="end">
-                    <DropdownMenuItem onSelect={() => setShowCreditDialog(true)}>
+                    <DropdownMenuItem onSelect={() => setTransactionMode("credit")}>
                       <PlusIcon /> {t('account.info.actions.credit')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setShowTransactionDialog(true)}>
+                    <DropdownMenuItem onSelect={() => setTransactionMode("transfer")}>
                       <LucideGitCompareArrows /> {t('account.info.actions.over_account')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setShowDebitDialog(true)}>
+                    <DropdownMenuItem onSelect={() => setTransactionMode("debit")}>
                       <MinusIcon /> {t('account.info.actions.debit')}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onSelect={() => setShowRenameDialog(true)}>
+                      <PencilIcon /> {t('account.rename.label')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </SlideXAnimation>
-              <Dialog open={showCreditDialog} onOpenChange={(open) => {handleOpenChange(setShowCreditDialog, open)}}>
-                <DialogContent className="sm:max-w-[425px]">
-                  <form onSubmit={handleCredit}>
-                    <DialogHeader>
-                      <DialogTitle>{t('account.transactions.credit')}</DialogTitle>
-                      <DialogDescription>
-                        {t('account.transactions.desc')}
-                      </DialogDescription>
-                    </DialogHeader>
-                    <FieldGroup className="py-3">
-                      <Field>
-                        <FieldLabel>{t('account.transactions.fields.amount')}</FieldLabel>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <span className="text-muted-foreground sm:text-sm">€</span>
-                          </div>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            placeholder="0.00"
-                            onChange={(e) => setAmount(e.target.value)}
-                            className="pl-7"
-                            onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
-                            required
-                          />
-                        </div>
-                      </Field>
-                      <Field>
-                        <FieldLabel>{t('account.transactions.fields.category')}</FieldLabel>
-                        <Select
-                          value={selectedCategory}
-                          onValueChange={setSelectedCategory}
-                          required
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('account.transactions.fields.category_placeholder')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((cat) => (
-                              <SelectItem key={cat.id} value={cat.id.toString()}>{cat.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </Field>
-                      <Field>
-                        <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
-                        <Textarea
-                          id="textarea-message"
-                          value={description}
-                          placeholder={t('account.transactions.fields.description_placeholder')}
-                          onChange={(e) => setDescription(e.target.value)}
-                        />
-                      </Field>
-                    </FieldGroup>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">{t('core.cancel')}</Button>
-                      </DialogClose>
-                      <Button type="submit">{t('core.create')}</Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
-              <Dialog open={showDebitDialog} onOpenChange={(open) => {handleOpenChange(setShowDebitDialog, open)}}>
-                <DialogContent className="sm:max-w-[425px]">
-                  <form onSubmit={handleDebit}>
-                    <DialogHeader>
-                      <DialogTitle>{t('account.transactions.debit')}</DialogTitle>
-                      <DialogDescription>
-                        {t('account.transactions.desc')}
-                      </DialogDescription>
-                    </DialogHeader>
-                    <FieldGroup className="py-3">
-                      <Field>
-                        <FieldLabel>{t('account.transactions.fields.amount')}</FieldLabel>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <span className="text-muted-foreground sm:text-sm">€</span>
-                          </div>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            placeholder="0.00"
-                            onChange={(e) => setAmount(e.target.value)}
-                            className="pl-7"
-                            onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
-                            required
-                          />
-                        </div>
-                      </Field>
-                      <Field>
-                        <FieldLabel>{t('account.transactions.fields.category')}</FieldLabel>
-                        <Select
-                          value={selectedCategory}
-                          onValueChange={setSelectedCategory}
-                          required
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('account.transactions.fields.category_placeholder')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((cat) => (
-                              <SelectItem key={cat.id} value={cat.id.toString()}>{cat.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </Field>
-                      <Field>
-                        <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
-                        <Textarea
-                          id="textarea-message"
-                          value={description}
-                          placeholder={t('account.transactions.fields.description_placeholder')}
-                          onChange={(e) => setDescription(e.target.value)}
-                        />
-                      </Field>
-                    </FieldGroup>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">{t('core.cancel')}</Button>
-                      </DialogClose>
-                      <Button type="submit">{t('core.create')}</Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
-              <Dialog open={showTransactionDialog} onOpenChange={(open) => {handleOpenChange(setShowTransactionDialog, open)}}>
-                <DialogContent className="sm:max-w-[425px]">
-                  <form onSubmit={handleOver}>
-                    <DialogHeader>
-                      <DialogTitle>{t('account.transactions.over_account')}</DialogTitle>
-                      <DialogDescription>
-                        {t('account.transactions.desc')}
-                      </DialogDescription>
-                    </DialogHeader>
-                    <FieldGroup className="py-3">
-                      <Field>
-                        <FieldLabel>{t('account.transactions.fields.receiver')}</FieldLabel>
-                        <Select
-                          value={selectedReceiver}
-                          onValueChange={setSelectedReceiver}
-                          required
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('account.transactions.fields.receiver_placeholder')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {accounts.filter((acc) => acc.id != account.id).map((acc) => (
-                              <SelectItem key={acc.id} value={acc.id.toString()}>{acc.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </Field>
-                      <Field>
-                        <FieldLabel>{t('account.transactions.fields.amount')}</FieldLabel>
-                        <div className="relative">
-                          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <span className="text-muted-foreground sm:text-sm">€</span>
-                          </div>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            placeholder="0.00"
-                            onChange={(e) => setAmount(e.target.value)}
-                            className="pl-7"
-                            onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
-                            required
-                          />
-                        </div>
-                      </Field>
-                      <Field>
-                        <FieldLabel>{t('account.transactions.fields.category')}</FieldLabel>
-                        <Select
-                          value={selectedCategory}
-                          onValueChange={setSelectedCategory}
-                          required
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('account.transactions.fields.category_placeholder')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((cat) => (
-                              <SelectItem key={cat.id} value={cat.id.toString()}>{cat.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </Field>
-                      <Field>
-                        <FieldLabel htmlFor="textarea-message">{t('account.transactions.fields.description')}</FieldLabel>
-                        <Textarea
-                          id="textarea-message"
-                          value={description}
-                          placeholder={t('account.transactions.fields.description_placeholder')}
-                          onChange={(e) => setDescription(e.target.value)}
-                        />
-                      </Field>
-                    </FieldGroup>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">{t('core.cancel')}</Button>
-                      </DialogClose>
-                      <Button type="submit">{t('core.create')}</Button>
-                    </DialogFooter>
-                  </form>
-                </DialogContent>
-              </Dialog>
             </CardHeader>
             <CardContent>
               <div className="mt-4">
                 <FadeAnimation delay={.8} className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">{t('account.info.balance')}</FadeAnimation>
-                <FadeAnimation delay={1} className={`text-3xl font-black ${account.balance >= 0 ? 'text-emerald-500' : 'text-red-800'}`}>
-                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(parseFloat(account.balance))}
+                <FadeAnimation delay={1} className={`text-3xl font-black ${isPositive ? 'text-emerald-500' : 'text-red-800'}`}>
+                  {formatMoney(account.balance, i18n.language)}
                 </FadeAnimation>
               </div>
             </CardContent>
           </Card>
         </SlideXAnimation>
-        
+
         <FadeAnimation delay={.3} className="lg:col-span-2">
           <Card className="border-dashed border-muted bg-muted/0 shadow-lg flex flex-col justify-center items-center p-8 min-h-[250px]">
             {transactionsData.results.length > 0 ?
@@ -537,7 +258,14 @@ export default function Account() {
 
           {transactionsData.results.length > 0 ? (
             <FadeAnimation delay={.8}>
-              <TransactionList transactions={transactionsData.results} setTransactions={setTransactionsData} updateAccount={updateAccount} />
+              <TransactionList
+                transactions={transactionsData.results}
+                setTransactions={setTransactionsData}
+                updateAccount={updateAccount}
+                accounts={accounts}
+                bank={bank}
+                categories={categories}
+              />
             </FadeAnimation>
           ) : (
             <FadeAnimation delay={.8}>
@@ -550,55 +278,7 @@ export default function Account() {
           )}
 
           <SlideYAnimation reverse delay={1}>
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (currentPage > 1) setCurrentPage(currentPage - 1);
-                    }}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                  />
-                </PaginationItem>
-
-                {[...Array(totalPages)].map((_, i) => {
-                  const pageNum = i + 1;
-                  if (pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)) {
-                    return (
-                      <PaginationItem key={pageNum}>
-                        <PaginationLink
-                          href="#"
-                          isActive={currentPage === pageNum}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setCurrentPage(pageNum);
-                          }}
-                        >
-                          {pageNum}
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  }
-                  if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
-                    return <PaginationEllipsis key={pageNum} />;
-                  }
-                  return null;
-                })}
-
-                <PaginationItem>
-                  <PaginationNext
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-                    }}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <ListPagination currentPage={currentPage} totalPages={totalPages} onChange={setCurrentPage} />
           </SlideYAnimation>
         </div>
 

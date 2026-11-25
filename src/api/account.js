@@ -4,7 +4,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const getAccounts = async () => {
     const response = await client.get(`${API_URL}/accounts/`);
-    return response.data.results;
+    // A plain array; older API versions wrapped it in a page object.
+    return response.data.results ?? response.data;
 };
 
 export const getAccount = async (id) => {
@@ -14,6 +15,11 @@ export const getAccount = async (id) => {
 
 export const createAccount = async (data) => {
     const response = await client.post(`${API_URL}/accounts/`, data);
+    return response.data;
+}
+
+export const updateAccount = async (id, data) => {
+    const response = await client.patch(`${API_URL}/accounts/${id}/`, data);
     return response.data;
 }
 

@@ -29,6 +29,9 @@ export function useBreadcrumbItems(path) {
         '/category': [
             { label: t(`${location}.category`) },
         ],
+        '/profile': [
+            { label: t(`${location}.profile`) },
+        ],
     }
 
     if (!Object.keys(items).includes(path)) return [

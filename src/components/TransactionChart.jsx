@@ -3,10 +3,12 @@ import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { useTranslation } from "react-i18next";
+import { formatDay, formatMoney } from "@/lib/format";
 
-export const prepareChartData = (pk, balance, transactions) => {
-    const sorted = [...transactions].sort((a, b) => 
-        new Date(a.create_at).getTime() - new Date(b.create_at).getTime()
+export const prepareChartData = (pk, balance, transactions, language) => {
+    // Oldest first: by operation date, then by id for the same day.
+    const sorted = [...transactions].sort((a, b) =>
+        a.date === b.date ? a.id - b.id : a.date.localeCompare(b.date)
     );
 
     const data = [];
@@ -14,12 +16,11 @@ export const prepareChartData = (pk, balance, transactions) => {
 
     for (let i = sorted.length - 1; i >= 0; i--) {
         const t = sorted[i];
-        const dateObj = new Date(t.create_at);
 
         data.unshift({
-            id: t.pk,
-            fullDate: dateObj.toLocaleString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }),
-            date: dateObj.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }),
+            id: t.id,
+            fullDate: formatDay(t.date, language),
+            date: formatDay(t.date, language, { day: '2-digit', month: 'short' }),
             balance: currentRunningBalance,
         });
 
@@ -33,9 +34,11 @@ export const prepareChartData = (pk, balance, transactions) => {
 };
 
 export function TransactionChart({ pk, balance, transactions }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const language = i18n.language;
 
-    const chartData = useMemo(() => prepareChartData(pk, balance, transactions), [pk, balance, transactions]);
+    const chartData = useMemo(() => prepareChartData(pk, balance, transactions, language), [pk, balance, transactions, language]);
+    const dateById = useMemo(() => new Map(chartData.map((point) => [point.id, point.date])), [chartData]);
 
     const chartConfig = {
         balance: {
@@ -63,7 +66,8 @@ export function TransactionChart({ pk, balance, transactions }) {
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
-                            ticks={[chartData[0]?.date, chartData[chartData.length - 1]?.date]}
+                            ticks={[chartData[0]?.id, chartData[chartData.length - 1]?.id]}
+                            tickFormatter={(id) => dateById.get(id) ?? ''}
                             interval="preserveStartEnd"
                             className="text-xs"
                         />
@@ -75,9 +79,9 @@ export function TransactionChart({ pk, balance, transactions }) {
                                 return (
                                     <div className="rounded-lg border bg-background p-2 shadow-sm">
                                         <div className="grid grid-cols-2 gap-2">
-                                        <span className="font-bold">Solde</span>
-                                        <span className="font-bold text-right">{data.balance.toFixed(2)} €</span>
-                                        <span className="text-muted-foreground">Date</span>
+                                        <span className="font-bold">{t('account.chart.balance')}</span>
+                                        <span className="font-bold text-right">{formatMoney(data.balance, language)}</span>
+                                        <span className="text-muted-foreground">{t('transaction.table.date')}</span>
                                         <span className="font-medium text-muted-foreground text-right text-xs">{data.fullDate}</span>
                                         </div>
                                     </div>

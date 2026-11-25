@@ -64,6 +64,7 @@ export function CreateAccountDialog({ open, onOpenChange, onCreated }) {
                             id="label"
                             placeholder={t('account.fields.label_placeholder')}
                             value={label} 
+                            maxLength={200}
                             onChange={(e) => setLabel(e.target.value)} 
                             required 
                         />
