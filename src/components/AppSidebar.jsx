@@ -50,7 +50,7 @@ export function AppSidebar() {
         <Sidebar>
             <SlideYAnimation>
                 <SidebarHeader className="flex flex-row gap-2 pt-4 ml-5">
-                    <img src="/images/logo.ico" alt="Logo" className="h-12 w-12 object-contain" />
+                    <img src="/images/logo.svg" alt="Logo" className="h-12 w-12 object-contain" />
                     <div className="flex flex-col justify-center">
                         <h2 className="text-lg font-semibold">Account Manager</h2>
                         <p className="text-neutral-500 text-[12px]">v0.1.4</p>
