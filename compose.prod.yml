@@ -1,0 +1,37 @@
+# Production, for Dokploy. The image is built and pushed by the CI.
+#
+# Set in the Dokploy environment:
+#   DOCKER_IMAGE  the image on Docker Hub, for example myuser/bank-account-manager-front
+#   API_URL       the address of the API as the browser sees it, for example https://api.example.org
+#   IMAGE_TAG     optional: a released version such as 1.0.42 (default: latest)
+#
+# Then point the domain at the service "front", port 8080, in Dokploy.
+services:
+  front:
+    image: ${DOCKER_IMAGE:?set DOCKER_IMAGE, for example myuser/bank-account-manager-front}:${IMAGE_TAG:-latest}
+    pull_policy: always
+    restart: unless-stopped
+    environment:
+      API_URL: ${API_URL:?set API_URL, for example https://api.example.org}
+      # Prefix of the keys kept in the browser's localStorage (theme, language).
+      LOCAL_KEY: ${LOCAL_KEY:-bank_account_manager}
+    # Reached through Dokploy's reverse proxy only: no port is published.
+    expose:
+      - 8080
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    # The container only serves static files, as a non-root user.
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true

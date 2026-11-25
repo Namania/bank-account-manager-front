@@ -16,7 +16,7 @@ Copy `.env.example` to `.env`:
 | `VITE_API_URL` | Address of the API **as the browser sees it**, for example `http://localhost:5555`. |
 | `VITE_LOCAL_KEY` | Prefix of the keys kept in `localStorage` (theme and language). |
 
-Both values end up in the built files: they are public.
+Both values are public: they reach the browser. This file is for development; the Docker image takes its settings when the container starts (see Deployment).
 
 The API must list the exact origin of this application in its `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS`. In development that is `http://localhost:8080`.
 
@@ -79,20 +79,44 @@ All of this lives in `src/api/client.js`; the other files in `src/api/` are one 
 
 ## Deployment
 
-`npm run build` produces static files. Serve them over HTTPS, with every unknown path falling back to `index.html`.
+Every push to `main` that passes lint, tests, build and `npm audit` publishes a Docker image and tags the commit:
 
-Security headers are set by whatever serves the files. A starting point, with the API origin filled in:
+- image `<DOCKERHUB_USERNAME>/bank-account-manager-front`, tagged `1.0.<run number>` and `latest`;
+- git tag `v1.0.<run number>` on the commit that was built.
 
+The workflow needs two repository secrets: `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` (a Docker Hub access token with write access).
+
+### The image
+
+nginx serving the built files as a non-root user, on port 8080. Nothing about an environment is baked in: the settings are read when the container starts.
+
+| Variable | Purpose |
+|---|---|
+| `API_URL` | Required. Address of the API as the browser sees it, for example `https://api.example.org`. The container refuses to start without it. |
+| `LOCAL_KEY` | Prefix of the `localStorage` keys. `bank_account_manager` by default. |
+
+The image sets the security headers itself: a `Content-Security-Policy` that only allows this application and the API's origin, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy` and `Permissions-Policy`. `'unsafe-inline'` is allowed for styles only, because the UI components write inline styles. HTTPS and `Strict-Transport-Security` belong to the reverse proxy in front of it.
+
+`GET /healthz` answers `ok` for health checks.
+
+```sh
+docker build -t bank-account-manager-front .
+docker run --rm -p 8080:8080 -e API_URL=http://localhost:5555 bank-account-manager-front
 ```
-Content-Security-Policy: default-src 'self'; connect-src 'self' https://<api-host>; style-src 'self' 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
-Strict-Transport-Security: max-age=31536000; includeSubDomains
-X-Content-Type-Options: nosniff
-Referrer-Policy: strict-origin-when-cross-origin
-```
 
-`'unsafe-inline'` is needed for styles only: the UI components write inline styles.
+### Dokploy
 
-If the application and the API are on different sites, the API needs `AUTH_COOKIE_SAMESITE=None`.
+Use `compose.prod.yml` as a Compose application and set, in its environment:
+
+| Variable | Example |
+|---|---|
+| `DOCKER_IMAGE` | `myuser/bank-account-manager-front` |
+| `API_URL` | `https://api.example.org` |
+| `IMAGE_TAG` | optional, `1.0.42`; `latest` by default |
+
+Then add the domain on the service `front`, port `8080`, with HTTPS.
+
+On the API side, `FRONT_ORIGIN` must be the exact origin of this application (`https://app.example.org`). If the application and the API are on different sites, the API also needs `AUTH_COOKIE_SAMESITE=None`.
 
 The application can be added to a phone's home screen: icons and `manifest.webmanifest` are in `public/`.
 

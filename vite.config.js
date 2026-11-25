@@ -9,9 +9,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // Single source for the version shown in the sidebar.
+  // The version shown in the sidebar.
   define: {
-    __APP_VERSION__: JSON.stringify(packageJson.version),
+    // A release build passes its own number in APP_VERSION.
+    __APP_VERSION__: JSON.stringify(process.env.APP_VERSION || packageJson.version),
   },
   // Listens on localhost only. Use `npm run dev -- --host` to expose it on the network.
   server: {

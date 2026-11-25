@@ -1,6 +1,5 @@
 import client from "./client";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_URL } from "@/config";
 
 export const getCategories = async () => {
     const response = await client.get(`${API_URL}/categories/`);

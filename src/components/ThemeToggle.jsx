@@ -1,6 +1,7 @@
 import { Moon, Sun, Monitor } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
+import { LOCAL_KEY } from "@/config";
 import { useTranslation } from "react-i18next";
 import {
     DropdownMenu,
@@ -14,7 +15,7 @@ export default function ThemeToggle({ className }) {
     const { theme, setTheme } = useTheme();
 
     const changeTheme = (current) => {
-        const localKey = import.meta.env.VITE_LOCAL_KEY;
+        const localKey = LOCAL_KEY;
         setTheme(current);
         localStorage.setItem(`${localKey}.theme`, current);
     };

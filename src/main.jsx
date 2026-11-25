@@ -22,12 +22,13 @@ import Stats from './pages/Stats';
 import Recurring from './pages/Recurring';
 import Budgets from './pages/Budgets';
 import { getHealth, setMaintenanceHandler } from './api/client';
+import { LOCAL_KEY } from './config';
 
 const MAINTENANCE_POLL_MS = 30_000;
 
 export default function Root() {
   const [maintenance, setMaintenance] = useState(null);
-  const localKey = import.meta.env.VITE_LOCAL_KEY;
+  const localKey = LOCAL_KEY;
   const { i18n } = useTranslation();
 
   const defaultTheme = localStorage.getItem(`${localKey}.theme`) ?? 'dark';

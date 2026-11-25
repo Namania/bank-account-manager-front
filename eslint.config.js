@@ -28,6 +28,11 @@ export default defineConfig([
     },
   },
   {
+    // Build configuration runs in Node.
+    files: ['vite.config.js'],
+    languageOptions: { globals: { ...globals.node } },
+  },
+  {
     // Tests run in Node.
     files: ['**/*.test.js'],
     languageOptions: { globals: { ...globals.node } },

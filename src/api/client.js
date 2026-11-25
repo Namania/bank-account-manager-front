@@ -1,6 +1,6 @@
 import axios from "axios";
+import { API_URL } from "@/config";
 
-const API_URL = import.meta.env.VITE_API_URL;
 const WRITE_METHODS = ["post", "put", "patch", "delete"];
 
 // The session lives in HttpOnly cookies set by the API: this code never sees a

@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { LOCAL_KEY } from "@/config";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,7 +13,7 @@ export default function LanguageToggle({ className }) {
     const { i18n } = useTranslation();
 
     const changeLanguage = (lang) => {
-        const localKey = import.meta.env.VITE_LOCAL_KEY;
+        const localKey = LOCAL_KEY;
         i18n.changeLanguage(lang);
         localStorage.setItem(`${localKey}.lang`, lang);
     };
