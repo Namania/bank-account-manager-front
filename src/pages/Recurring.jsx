@@ -240,10 +240,12 @@ export default function Recurring() {
 
             {rules.length === 0 ? (
                 <FadeAnimation delay={.3} className="flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
-                    <RepeatIcon className="h-10 w-10 text-muted-foreground mb-4 opacity-20" />
+                    <div className="p-4 rounded-full bg-chart-5/15 text-chart-5 mb-4">
+                        <RepeatIcon className="h-8 w-8" />
+                    </div>
                     <p className="text-muted-foreground">{t("recurring.empty")}</p>
-                    <Button variant="outline" className="mt-4" onClick={() => setIsModalOpen(true)}>
-                        <PlusIcon className="mr-2 h-4 w-4" /> {t("recurring.new")}
+                    <Button className="mt-4" onClick={() => setIsModalOpen(true)}>
+                        <PlusIcon /> {t("recurring.new")}
                     </Button>
                 </FadeAnimation>
             ) : (
@@ -306,8 +308,8 @@ export default function Recurring() {
                                                         {rule.is_active ? <PauseIcon /> : <PlayIcon />}
                                                         {t(rule.is_active ? "recurring.pause" : "recurring.resume")}
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem onSelect={() => setToDelete(rule)} className="text-red-800">
-                                                        <Trash2Icon className="text-red-500" /> {t("transaction.actions.delete")}
+                                                    <DropdownMenuItem onSelect={() => setToDelete(rule)} className="text-destructive">
+                                                        <Trash2Icon className="text-destructive" /> {t("transaction.actions.delete")}
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>

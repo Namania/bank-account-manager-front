@@ -24,7 +24,7 @@ export default defineConfig([
     },
     rules: {
       // `motion` is only referenced as a JSX member (<motion.div>), which this rule cannot see.
-      'no-unused-vars': ['error', { varsIgnorePattern: '^([A-Z_]|motion$)' }],
+      'no-unused-vars': ['error', { varsIgnorePattern: '^([A-Z_]|motion$)', argsIgnorePattern: '^[A-Z_]' }],
     },
   },
   {

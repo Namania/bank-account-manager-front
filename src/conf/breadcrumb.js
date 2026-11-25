@@ -4,7 +4,7 @@ export function isNumeric(value) {
     return /^-?\d+$/.test(value);
 }
 
-export function useBreadcrumbItems(path) {
+export function useBreadcrumbItems(path, pageLabel = null) {
     const { t } = useTranslation();
     const location = 'core.breadcrumb';
 
@@ -21,7 +21,7 @@ export function useBreadcrumbItems(path) {
         ],
         '/account/': [
             { label: t(`${location}.accounts`), href: '/' },
-            { label: last },
+            { label: pageLabel ?? last },
         ],
         '/transaction': [
             { label: t(`${location}.transaction`) },

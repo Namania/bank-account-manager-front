@@ -17,7 +17,7 @@ import { CreateCategoryDialog } from "@/components/CreateCategoryDialog";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { EditCategoryDialog } from "@/components/EditCategoryDialog";
-import SlideXAnimation from "@/components/animation/SlideXAnimation";
+import { StaggerGroup, StaggerItem } from "@/components/animation/Stagger";
 import FadeAnimation from "@/components/animation/FadeAnimation";
 import { useAuth } from "@/auth/AuthContext";
 
@@ -112,26 +112,28 @@ export default function Category() {
             />
             {categories.length === 0 ? (
                 <FadeAnimation delay={.3} className="h-full flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
-                    <Tag className="h-10 w-10 text-muted-foreground mb-4 opacity-20" />
+                    <div className="p-4 rounded-full bg-chart-4/15 text-chart-4 mb-4">
+                        <Tag className="h-8 w-8" />
+                    </div>
                     <p className="text-muted-foreground">{t('category.empty')}</p>
-                    <Button variant="outline" className="mt-4" onClick={() => setIsModalOpen(true)}>
-                        <Plus className="mr-2 h-4 w-4" /> {t('category.first')}
+                    <Button className="mt-4" onClick={() => setIsModalOpen(true)}>
+                        <Plus /> {t('category.first')}
                     </Button>
                 </FadeAnimation>
             ) : (
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))]">
-                    {categories.map((category, index) => (
-                        <SlideXAnimation delay={.2 + .1 * index} key={index}>
-                            <Card className="overflow-hidden transition-all hover:shadow-md">
+                <StaggerGroup className="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(240px,1fr))]">
+                    {categories.map((category) => (
+                        <StaggerItem key={category.id} lift>
+                            <Card className="overflow-hidden transition-shadow hover:shadow-md py-2">
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 p-2 px-5">
                                     <div className="flex items-center gap-3">
-                                        <Badge
-                                            variant="outline"
-                                            className="font-mono text-[10px] uppercase"
-                                            style={{ borderColor: category.color, color: category.color }}
+                                        <span
+                                            aria-hidden="true"
+                                            className="flex size-9 shrink-0 items-center justify-center rounded-lg"
+                                            style={{ backgroundColor: `${category.color}26`, color: category.color }}
                                         >
-                                            {category.color}
-                                        </Badge>
+                                            <Tag className="size-4" />
+                                        </span>
                                         <CardTitle className="text-sm font-semibold">
                                             {category.label}
                                         </CardTitle>
@@ -165,9 +167,9 @@ export default function Category() {
                                     </DropdownMenu>}
                                 </CardHeader>
                             </Card>
-                        </SlideXAnimation>
+                        </StaggerItem>
                     ))}
-                </div>
+                </StaggerGroup>
             )}
         </div>
     );

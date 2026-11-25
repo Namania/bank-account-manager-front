@@ -9,6 +9,7 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom
 import NotFound from './pages/NotFound';
 import Maintenance from './pages/Maintenance';
 import { useEffect, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { useTranslation } from "react-i18next";
 import LoginPage from './pages/LoginPage';
 import { AuthProvider, useAuth } from "./auth/AuthContext";
@@ -70,6 +71,7 @@ export default function Root() {
   }
 
   return (
+    <MotionConfig reducedMotion="user">
     <AuthProvider>
       <ThemeProvider defaultTheme={ defaultTheme }>
         <BrowserRouter>
@@ -94,6 +96,7 @@ export default function Root() {
         <Toaster position="bottom-right" richColors />
       </ThemeProvider>
     </AuthProvider>
+    </MotionConfig>
   );
 }
 

@@ -9,9 +9,9 @@ export default function NotFound() {
         <div className="h-full flex flex-col items-center justify-center">
             <div className="flex flex-col items-center text-center space-y-4">
 
-                <div className="rounded-full bg-purple-500/10 p-6">
+                <div className="rounded-full bg-chart-4/15 p-6">
                     <FileQuestion 
-                        className="h-10 w-10 text-purple-600" 
+                        className="h-10 w-10 text-chart-4" 
                         strokeWidth={1.5} 
                     />
                 </div>

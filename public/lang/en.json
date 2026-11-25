@@ -41,6 +41,13 @@
           "placeholder": "Enter your password"
         },
         "send": "Login"
+      },
+      "subtitle": "Sign in to get back to your accounts.",
+      "tagline": "Your accounts, budgets and spending in one place.",
+      "features": {
+        "stats": "Clear statistics, month by month",
+        "budgets": "A budget per category, tracked live",
+        "recurring": "Your recurring transactions, automated"
       }
     },
     "maintenance": {
@@ -91,7 +98,8 @@
       "actions": {
         "credit": "Credit",
         "debit": "Debit",
-        "over_account": "Transaction"
+        "over_account": "Transaction",
+        "transfer": "Transfer"
       },
       "balance": "Current Balance",
       "personal": "Personal",
@@ -161,6 +169,12 @@
         "too_large": "The file is larger than 1 MB.",
         "unreadable": "The file cannot be read."
       }
+    },
+    "overview": {
+      "greeting": "Hello {{name}}",
+      "total": "Total balance",
+      "count_one": "{{count}} account",
+      "count_other": "{{count}} accounts"
     }
   },
   "category": {
@@ -266,7 +280,9 @@
       "title": "Details",
       "desc": "Your username and e-mail address.",
       "email": "E-mail address",
-      "success": "Profile updated"
+      "success": "Profile updated",
+      "no_email": "No e-mail address",
+      "staff": "Administrator"
     },
     "password": {
       "title": "Password",

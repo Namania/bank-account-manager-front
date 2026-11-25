@@ -5,7 +5,10 @@ import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, Loader2, Send } from "lucide-react";
+import { AlertCircle, BarChart3Icon, Loader2, RepeatIcon, Send, TargetIcon } from "lucide-react";
+import FadeAnimation from "@/components/animation/FadeAnimation";
+import SlideYAnimation from "@/components/animation/SlideYAnimation";
+import { StaggerGroup, StaggerItem } from "@/components/animation/Stagger";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
@@ -49,10 +52,40 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center p-4">
-            <Card className="w-full max-w-[400px] bg-card text-card-foreground border-border shadow-lg">
+        <div className="min-h-screen w-full grid lg:grid-cols-2">
+            <div className="hidden lg:flex flex-col justify-between bg-primary text-primary-foreground p-12 dark:bg-card dark:text-card-foreground dark:border-r">
+                <FadeAnimation className="flex items-center gap-3">
+                    <img src="/images/logo.svg" alt="" className="h-12 w-12" />
+                    <span className="text-xl font-semibold">Account Manager</span>
+                </FadeAnimation>
+                <div className="space-y-8">
+                    <SlideYAnimation reverse delay={.3}>
+                        <h1 className="text-4xl font-black tracking-tight leading-tight max-w-md">{t('core.login.tagline')}</h1>
+                    </SlideYAnimation>
+                    <StaggerGroup className="space-y-4">
+                        {[
+                            { icon: BarChart3Icon, key: 'stats' },
+                            { icon: TargetIcon, key: 'budgets' },
+                            { icon: RepeatIcon, key: 'recurring' },
+                        ].map((feature) => (
+                            <StaggerItem key={feature.key} className="flex items-center gap-3">
+                                <span className="flex size-10 items-center justify-center rounded-lg bg-primary-foreground/15 dark:bg-chart-1/15 dark:text-chart-1">
+                                    <feature.icon className="size-5" />
+                                </span>
+                                <span className="text-primary-foreground/90 dark:text-foreground">{t(`core.login.features.${feature.key}`)}</span>
+                            </StaggerItem>
+                        ))}
+                    </StaggerGroup>
+                </div>
+                <span className="text-sm text-primary-foreground/70 dark:text-muted-foreground">v{__APP_VERSION__}</span>
+            </div>
+            <div className="flex items-center justify-center p-4">
+            <SlideYAnimation reverse delay={.2} className="w-full max-w-[400px]">
+            <Card className="w-full bg-card text-card-foreground border-border shadow-lg">
                 <CardHeader className="space-y-1">
-                    <CardTitle className="text-xl">{t('core.login.title')}</CardTitle>
+                    <img src="/images/logo.svg" alt="" className="h-12 w-12 mb-2 lg:hidden" />
+                    <CardTitle className="text-2xl">{t('core.login.title')}</CardTitle>
+                    <CardDescription>{t('core.login.subtitle')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
@@ -74,6 +107,7 @@ export default function LoginPage() {
                                         <FormControl>
                                             <Input
                                                 placeholder={t('core.login.fields.username.placeholder')}
+                                                autoComplete="username"
                                                 {...field}
                                                 className="bg-background border-input focus-visible:ring-primary h-9"
                                             />
@@ -92,6 +126,7 @@ export default function LoginPage() {
                                         <FormControl>
                                             <Input
                                                 type="password"
+                                                autoComplete="current-password"
                                                 placeholder={t('core.login.fields.password.placeholder')}
                                                 {...field}
                                                 className="bg-background border-input focus-visible:ring-primary h-9"
@@ -104,6 +139,7 @@ export default function LoginPage() {
 
                             <Button
                                 type="submit"
+                                disabled={isLoading}
                                 className="w-full h-10 shadow-md transition-transform active:scale-95"
                             >
                                 {isLoading ? (
@@ -117,6 +153,8 @@ export default function LoginPage() {
                     </Form>
                 </CardContent>
             </Card>
+            </SlideYAnimation>
+            </div>
             <div className="fixed top-5 right-5 flex flex-reverse-row gap-3">
                 <LanguageToggle />
                 <ThemeToggle />

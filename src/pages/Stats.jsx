@@ -12,18 +12,27 @@ import BalanceChart from "@/components/charts/BalanceChart";
 import MonthlyFlowChart from "@/components/charts/MonthlyFlowChart";
 import FadeAnimation from "@/components/animation/FadeAnimation";
 import { formatMoney, formatMonth } from "@/lib/format";
+import { Progress } from "@/components/ui/progress";
+import AnimatedMoney from "@/components/animation/AnimatedMoney";
+import { StaggerGroup, StaggerItem } from "@/components/animation/Stagger";
+import { ScaleIcon, TrendingDownIcon, TrendingUpIcon } from "lucide-react";
 
 const ALL = "all";
 
 const sum = (rows, key) => rows.reduce((total, row) => total + parseFloat(row[key]), 0);
 
-function StatTile({ label, value }) {
+function StatTile({ label, value, icon: Icon, chip }) {
     return (
-        <Card className="gap-1 py-4">
-            <CardHeader className="px-4">
+        <Card className="gap-2 py-4 h-full transition-shadow hover:shadow-md">
+            <CardHeader className="px-4 flex flex-row items-center justify-between space-y-0">
                 <CardDescription className="text-xs uppercase font-semibold tracking-wider">{label}</CardDescription>
+                <span aria-hidden="true" className={`flex size-9 items-center justify-center rounded-lg ${chip}`}>
+                    <Icon className="size-4" />
+                </span>
             </CardHeader>
-            <CardContent className="px-4 text-2xl font-black tabular-nums">{value}</CardContent>
+            <CardContent className="px-4">
+                <AnimatedMoney value={value} className="text-2xl font-black" />
+            </CardContent>
         </Card>
     );
 }
@@ -50,12 +59,11 @@ function CategoryBreakdown({ rows }) {
                         </span>
                         <span className="font-semibold tabular-nums">{formatMoney(row.expense, i18n.language)}</span>
                     </div>
-                    <div className="h-2 rounded-full bg-muted">
-                        <div
-                            className="h-2 rounded-full"
-                            style={{ width: `${Math.max(1, (parseFloat(row.expense) / largest) * 100)}%`, backgroundColor: "var(--viz-1)" }}
-                        />
-                    </div>
+                    <Progress
+                        value={Math.max(1, (parseFloat(row.expense) / largest) * 100)}
+                        aria-label={row.category == null ? t("transaction.no_category") : row.label}
+                        className="bg-muted [&>[data-slot=progress-indicator]]:bg-chart-1"
+                    />
                 </li>
             ))}
         </ul>
@@ -122,11 +130,11 @@ export default function Stats() {
                 </div>
             </div>
 
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
-                <StatTile label={t("stats.income")} value={formatMoney(sum(months, "income"), language)} />
-                <StatTile label={t("stats.expense")} value={formatMoney(sum(months, "expense"), language)} />
-                <StatTile label={t("stats.net")} value={formatMoney(sum(months, "net"), language)} />
-            </div>
+            <StaggerGroup className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+                <StaggerItem><StatTile label={t("stats.income")} value={sum(months, "income")} icon={TrendingUpIcon} chip="bg-chart-2/15 text-chart-2" /></StaggerItem>
+                <StaggerItem><StatTile label={t("stats.expense")} value={sum(months, "expense")} icon={TrendingDownIcon} chip="bg-chart-1/15 text-chart-1" /></StaggerItem>
+                <StaggerItem><StatTile label={t("stats.net")} value={sum(months, "net")} icon={ScaleIcon} chip="bg-chart-3/15 text-chart-3" /></StaggerItem>
+            </StaggerGroup>
 
             {!isLoading && !hasActivity ? (
                 <Card className="border-dashed border-muted bg-muted/0 p-12 text-center text-muted-foreground italic">
@@ -150,7 +158,7 @@ export default function Stats() {
                                 <CardDescription>{t("stats.balance.desc")}</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <BalanceChart months={months} height={284} />
+                                <BalanceChart months={months} className="h-[280px] w-full" />
                             </CardContent>
                         </Card>
                     </div>

@@ -10,6 +10,9 @@ import { AlertCircle } from "lucide-react";
 import { useAuth } from "@/auth/AuthContext";
 import { changePassword, updateProfile } from "@/api/user";
 import FadeAnimation from "@/components/animation/FadeAnimation";
+import { StaggerGroup, StaggerItem } from "@/components/animation/Stagger";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 // DRF answers a 400 with { field: ["message", ...] }.
 const fieldErrors = (error, field) => error.response?.data?.[field] ?? [];
@@ -180,10 +183,31 @@ function PasswordForm() {
 }
 
 export default function Profile() {
+    const { t } = useTranslation();
+    const { user } = useAuth();
+
     return (
-        <FadeAnimation delay={.2} className="p-6 grid gap-6 lg:grid-cols-2 items-start">
-            <ProfileForm />
-            <PasswordForm />
-        </FadeAnimation>
+        <div className="p-6 space-y-6">
+            <FadeAnimation>
+                <Card className="bg-chart-3/10 border-chart-3/25">
+                    <CardContent className="flex items-center gap-4">
+                        <Avatar className="size-14 rounded-xl">
+                            <AvatarFallback className="rounded-xl bg-chart-3/20 text-chart-3 text-xl font-bold">
+                                {user.username?.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0">
+                            <p className="text-xl font-bold truncate">{user.username}</p>
+                            <p className="text-sm text-muted-foreground truncate">{user.email || t("profile.info.no_email")}</p>
+                        </div>
+                        {user.is_staff && <Badge className="ml-auto">{t("profile.info.staff")}</Badge>}
+                    </CardContent>
+                </Card>
+            </FadeAnimation>
+            <StaggerGroup className="grid gap-6 lg:grid-cols-2 items-start">
+                <StaggerItem><ProfileForm /></StaggerItem>
+                <StaggerItem><PasswordForm /></StaggerItem>
+            </StaggerGroup>
+        </div>
     );
 }

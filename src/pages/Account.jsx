@@ -21,20 +21,21 @@ import ShareAccountDialog from "@/components/ShareAccountDialog";
 import ImportStatementDialog from "@/components/ImportStatementDialog";
 import ListPagination from "@/components/ListPagination";
 import BalanceChart from "@/components/charts/BalanceChart";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getCategories } from "@/api/category";
 import SlideYAnimation from "@/components/animation/SlideYAnimation";
 import FadeAnimation from "@/components/animation/FadeAnimation";
 import SlideXAnimation from "@/components/animation/SlideXAnimation";
-import { formatMoney } from "@/lib/format";
+import AnimatedMoney from "@/components/animation/AnimatedMoney";
+import { tintFor } from "@/lib/tints";
 
 const PAGE_SIZE = 100;
 
 export default function Account() {
   const { id } = useParams();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isModalOpen, setIsModalOpen } = useOutletContext();
+  const { isModalOpen, setIsModalOpen, setPageLabel } = useOutletContext();
 
   const [account, setAccount] = useState(null);
   const [accounts, setAccounts] = useState([]);
@@ -128,6 +129,12 @@ export default function Account() {
     return () => { ignore = true; };
   }, [id, navigate, t]);
 
+  // The breadcrumb shows the account's name.
+  const accountLabel = account?.label;
+  useEffect(() => {
+    if (accountLabel) setPageLabel(accountLabel);
+  }, [accountLabel, setPageLabel]);
+
   // Its transactions, for the current page and filters.
   useEffect(() => {
     let ignore = false;
@@ -162,6 +169,7 @@ export default function Account() {
   const totalPages = Math.ceil(transactionsData.count / PAGE_SIZE);
   const isShared = account.owners.length > 1;
   const isPositive = parseFloat(account.balance) >= 0;
+  const tint = tintFor(account.id);
   const hasTransactions = transactionsData.results.length > 0;
 
   return (
@@ -221,11 +229,11 @@ export default function Account() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <SlideXAnimation delay={.2} className="flex">
-          <Card className="w-full border-muted bg-muted/0 shadow-lg overflow-hidden">
+          <Card className={`w-full shadow-lg overflow-hidden transition-colors ${tint.card}`}>
             <CardHeader className="flex flex-row items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <SlideXAnimation delay={.4} className="p-2 rounded-lg bg-emerald-500/10">
-                  <User className="text-emerald-500 h-10 w-10" />
+              <div className="flex items-center space-x-3">
+                <SlideXAnimation delay={.4} className={`p-2 rounded-lg ${tint.chip}`}>
+                  <User className="h-10 w-10" />
                 </SlideXAnimation>
                 <div className="flex flex-col gap-1">
                   <FadeAnimation delay={.5}>
@@ -234,7 +242,7 @@ export default function Account() {
                     </Label>
                   </FadeAnimation>
                   <SlideYAnimation reverse delay={.3}>
-                    <Badge variant={isShared ? 'secondary' : 'outlined'} className={isShared ? 'bg-blue-500 dark:bg-blue-600' : ''}>
+                    <Badge variant={isShared ? 'default' : 'outline'}>
                       {isShared ? t('account.info.shared') : t('account.info.personal')}
                     </Badge>
                   </SlideYAnimation>
@@ -243,21 +251,11 @@ export default function Account() {
               <SlideXAnimation reverse delay={.5}>
                 <DropdownMenu modal={false}>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" aria-label="Open menu" size="icon-sm">
+                    <Button variant="outline" aria-label={t('core.actions')} size="icon-sm" className="bg-background/60">
                       <MoreHorizontalIcon />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-52" align="end">
-                    <DropdownMenuItem onSelect={() => setTransactionMode("credit")}>
-                      <PlusIcon /> {t('account.info.actions.credit')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setTransactionMode("transfer")}>
-                      <LucideGitCompareArrows /> {t('account.info.actions.over_account')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => setTransactionMode("debit")}>
-                      <MinusIcon /> {t('account.info.actions.debit')}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
                     <DropdownMenuItem onSelect={() => setShowImportDialog(true)}>
                       <UploadIcon /> {t('account.import.label')}
                     </DropdownMenuItem>
@@ -274,16 +272,27 @@ export default function Account() {
             <CardContent>
               <div className="mt-4">
                 <FadeAnimation delay={.8} className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">{t('account.info.balance')}</FadeAnimation>
-                <FadeAnimation delay={1} className={`text-3xl font-black ${isPositive ? 'text-emerald-500' : 'text-red-800'}`}>
-                  {formatMoney(account.balance, i18n.language)}
+                <FadeAnimation delay={1} className={`text-3xl font-black ${isPositive ? '' : 'text-destructive'}`}>
+                  <AnimatedMoney value={account.balance} />
                 </FadeAnimation>
               </div>
+              <FadeAnimation delay={1.2} className="mt-6 grid grid-cols-3 gap-2">
+                <Button onClick={() => setTransactionMode("credit")} className="transition-transform active:scale-95">
+                  <PlusIcon /> {t('account.info.actions.credit')}
+                </Button>
+                <Button variant="outline" onClick={() => setTransactionMode("debit")} className="bg-background/60 transition-transform active:scale-95">
+                  <MinusIcon /> {t('account.info.actions.debit')}
+                </Button>
+                <Button variant="outline" onClick={() => setTransactionMode("transfer")} className="bg-background/60 transition-transform active:scale-95">
+                  <LucideGitCompareArrows /> {t('account.info.actions.transfer')}
+                </Button>
+              </FadeAnimation>
             </CardContent>
           </Card>
         </SlideXAnimation>
 
         <FadeAnimation delay={.3} className="lg:col-span-2">
-          <Card className="border-dashed border-muted bg-muted/0 shadow-lg min-h-[250px]">
+          <Card className="shadow-lg min-h-[250px] h-full">
             {months.length > 0 ? (
               <>
                 <CardHeader>
@@ -296,8 +305,8 @@ export default function Account() {
               </>
             ) : (
               <div className="flex flex-1 flex-col items-center justify-center text-center space-y-3 p-8">
-                <div className="p-3 bg-muted rounded-full">
-                  <Wallet className="h-6 w-6 text-muted-foreground/50" />
+                <div className="p-3 rounded-full bg-chart-1/15 text-chart-1">
+                  <Wallet className="h-6 w-6" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">{t('account.chart.empty_title')}</p>

@@ -42,6 +42,13 @@
           "placeholder": "Entrez votre mot de passe"
         },
         "send": "S'identifier"
+      },
+      "subtitle": "Connectez-vous pour retrouver vos comptes.",
+      "tagline": "Vos comptes, vos budgets et vos dépenses au même endroit.",
+      "features": {
+        "stats": "Des statistiques claires, mois par mois",
+        "budgets": "Un budget par catégorie, suivi en direct",
+        "recurring": "Vos transactions récurrentes automatisées"
       }
     },
     "maintenance": {
@@ -92,7 +99,8 @@
       "actions": {
         "credit": "Créditer",
         "debit": "Débiter",
-        "over_account": "Transaction"
+        "over_account": "Transaction",
+        "transfer": "Virement"
       },
       "balance": "Solde Actuel",
       "personal": "Personnel",
@@ -162,6 +170,12 @@
         "too_large": "Le fichier dépasse 1 Mo.",
         "unreadable": "Le fichier est illisible."
       }
+    },
+    "overview": {
+      "greeting": "Bonjour {{name}}",
+      "total": "Solde total",
+      "count_one": "{{count}} compte",
+      "count_other": "{{count}} comptes"
     }
   },
   "category": {
@@ -267,7 +281,9 @@
       "title": "Informations",
       "desc": "Votre nom d'utilisateur et votre adresse e-mail.",
       "email": "Adresse e-mail",
-      "success": "Profil mis à jour"
+      "success": "Profil mis à jour",
+      "no_email": "Aucune adresse e-mail",
+      "staff": "Administrateur"
     },
     "password": {
       "title": "Mot de passe",

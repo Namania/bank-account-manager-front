@@ -15,6 +15,9 @@ import { getCategories } from "@/api/category";
 import { createBudget, deleteBudget, getBudgets, updateBudget } from "@/api/budget";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import FadeAnimation from "@/components/animation/FadeAnimation";
+import { StaggerGroup, StaggerItem } from "@/components/animation/Stagger";
+import { Progress } from "@/components/ui/progress";
+import AnimatedMoney from "@/components/animation/AnimatedMoney";
 import { formatMoney, formatMonth, toEuros, today } from "@/lib/format";
 
 function BudgetForm({ budget, categories, taken, onSaved, onOpenChange }) {
@@ -92,10 +95,16 @@ function BudgetCard({ budget, onEdit, onDelete }) {
     const share = amount > 0 ? Math.min(100, (spent / amount) * 100) : 0;
 
     return (
-        <Card>
+        <Card className="h-full transition-shadow hover:shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                <CardTitle className="flex items-center gap-2 text-base min-w-0">
-                    <span className="inline-block size-2.5 shrink-0 rounded-full border" style={{ backgroundColor: budget.category_details?.color ?? "transparent" }} />
+                <CardTitle className="flex items-center gap-3 text-base min-w-0">
+                    <span
+                        aria-hidden="true"
+                        className="flex size-9 shrink-0 items-center justify-center rounded-lg"
+                        style={{ backgroundColor: `${budget.category_details?.color ?? "#888888"}26`, color: budget.category_details?.color }}
+                    >
+                        <TargetIcon className="size-4" />
+                    </span>
                     <span className="truncate">{budget.category_details?.label}</span>
                 </CardTitle>
                 <DropdownMenu modal={false}>
@@ -116,19 +125,14 @@ function BudgetCard({ budget, onEdit, onDelete }) {
             </CardHeader>
             <CardContent className="space-y-3">
                 <div className="flex items-baseline justify-between gap-2">
-                    <span className="text-2xl font-black tabular-nums">{formatMoney(spent, language)}</span>
+                    <AnimatedMoney value={spent} className="text-2xl font-black" />
                     <span className="text-sm text-muted-foreground tabular-nums">{t("budget.of", { amount: formatMoney(amount, language) })}</span>
                 </div>
-                <div
-                    className="h-2 rounded-full bg-muted"
-                    role="progressbar"
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuenow={Math.round(share)}
+                <Progress
+                    value={share}
                     aria-label={t("budget.spent")}
-                >
-                    <div className={`h-2 rounded-full ${over ? "bg-destructive" : ""}`} style={{ width: `${share}%`, backgroundColor: over ? undefined : "var(--viz-1)" }} />
-                </div>
+                    className={over ? "bg-destructive/20 [&>[data-slot=progress-indicator]]:bg-destructive" : ""}
+                />
                 {over ? (
                     <Badge variant="destructive" className="gap-1">
                         <AlertTriangleIcon className="size-3" />
@@ -220,18 +224,22 @@ export default function Budgets() {
 
             {budgets.length === 0 ? (
                 <FadeAnimation delay={.3} className="flex flex-col items-center justify-center h-[50vh] border-2 border-dashed rounded-xl">
-                    <TargetIcon className="h-10 w-10 text-muted-foreground mb-4 opacity-20" />
+                    <div className="p-4 rounded-full bg-chart-1/15 text-chart-1 mb-4">
+                        <TargetIcon className="h-8 w-8" />
+                    </div>
                     <p className="text-muted-foreground">{t("budget.empty")}</p>
-                    <Button variant="outline" className="mt-4" onClick={() => setIsModalOpen(true)}>
-                        <PlusIcon className="mr-2 h-4 w-4" /> {t("budget.new")}
+                    <Button className="mt-4" onClick={() => setIsModalOpen(true)}>
+                        <PlusIcon /> {t("budget.new")}
                     </Button>
                 </FadeAnimation>
             ) : (
-                <FadeAnimation delay={.3} className="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
+                <StaggerGroup className="grid gap-4 grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(280px,1fr))]">
                     {budgets.map((budget) => (
-                        <BudgetCard key={budget.id} budget={budget} onEdit={() => setEditing(budget)} onDelete={() => setToDelete(budget)} />
+                        <StaggerItem key={budget.id} lift>
+                            <BudgetCard budget={budget} onEdit={() => setEditing(budget)} onDelete={() => setToDelete(budget)} />
+                        </StaggerItem>
                     ))}
-                </FadeAnimation>
+                </StaggerGroup>
             )}
         </div>
     );

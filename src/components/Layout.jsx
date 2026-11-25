@@ -8,14 +8,18 @@ import Header from "./Header"
 import { Button } from "./ui/button";
 import { PlusIcon, Trash2Icon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import SlideYAnimation from "./animation/SlideYAnimation";
+import PageTransition from "./animation/PageTransition";
 
 export default function Layout() {
   const { t } = useTranslation();
   const location = useLocation();
   let path = location.pathname;
-  const breadcrumbItems = useBreadcrumbItems(path);
+  // A page may name itself (an account shows its label rather than its id).
+  const [named, setNamed] = useState({ path: null, label: null });
+  const breadcrumbItems = useBreadcrumbItems(path, named.path === location.pathname ? named.label : null);
+  const setPageLabel = useCallback((label) => setNamed({ path: window.location.pathname, label }), []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   
@@ -79,9 +83,9 @@ export default function Layout() {
               : null
           }
         </Header>
-        <div className="p-2 flex-1">
-          <Outlet context={{ isModalOpen, setIsModalOpen }} />
-        </div>
+        <PageTransition className="p-2 flex-1">
+          <Outlet context={{ isModalOpen, setIsModalOpen, setPageLabel }} />
+        </PageTransition>
       </main>
     </SidebarProvider>
   );

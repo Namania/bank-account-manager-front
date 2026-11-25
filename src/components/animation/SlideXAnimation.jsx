@@ -5,7 +5,7 @@ export default function SlideXAnimation({ children, className = "", delay = 0, r
         <motion.div
           initial={{ opacity: 0, x: reverse ? 20 : -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: delay }}
+          transition={{ duration: 0.35, delay: delay * 0.35, ease: "easeOut" }}
           className={ className }
         >{ children }</motion.div>
     );

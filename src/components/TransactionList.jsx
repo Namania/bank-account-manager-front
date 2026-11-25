@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { Edit, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
+import { ArrowDownLeftIcon, ArrowLeftRightIcon, ArrowUpRightIcon, Edit, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./ui/alert-dialog";
 import TransactionDialog from "./TransactionDialog";
@@ -36,7 +36,7 @@ function AccountBadge({ account }) {
         <Badge
             variant="outline"
             title={inactive ? t('transaction.inactive_account') : undefined}
-            className={`font-medium ${account.is_bank ? 'text-neutral-600' : ''} ${inactive ? 'line-through text-muted-foreground' : ''}`}
+            className={`font-medium ${account.is_bank ? 'text-muted-foreground' : ''} ${inactive ? 'line-through text-muted-foreground' : ''}`}
         >
             {account.is_bank ? t('transaction.bank') : account.label}
         </Badge>
@@ -134,8 +134,13 @@ export default function TransactionList({ transactions, setTransactions, updateA
 
                         return (
                             <TableRow key={tx.id} className="hover:bg-muted/50 transition-colors">
-                                <TableCell className="font-mono text-xs text-muted-foreground">
-                                    #{tx.id}
+                                <TableCell>
+                                    <span className="flex items-center gap-2">
+                                        <span aria-hidden="true" className={`flex size-8 shrink-0 items-center justify-center rounded-lg ${fromBank ? 'bg-chart-2/15 text-chart-2' : toBank ? 'bg-chart-1/15 text-chart-1' : 'bg-chart-3/15 text-chart-3'}`}>
+                                            {fromBank ? <ArrowDownLeftIcon className="size-4" /> : toBank ? <ArrowUpRightIcon className="size-4" /> : <ArrowLeftRightIcon className="size-4" />}
+                                        </span>
+                                        <span className="font-mono text-xs text-muted-foreground">#{tx.id}</span>
+                                    </span>
                                 </TableCell>
                                 <TableCell>
                                     <AccountBadge account={tx.sender_details} />
@@ -160,8 +165,8 @@ export default function TransactionList({ transactions, setTransactions, updateA
                                         <span className="text-muted-foreground text-xs italic">{t('transaction.no_category')}</span>
                                     )}
                                 </TableCell>
-                                <TableCell className={`font-bold text-sm ${fromBank ? 'text-green-600' : toBank ? 'text-red-500' : ''}`}>
-                                    {toBank ? '-' : ''}{formatMoney(tx.amount, i18n.language)}
+                                <TableCell className="font-bold text-sm tabular-nums">
+                                    {toBank ? '−' : fromBank ? '+' : ''}{formatMoney(tx.amount, i18n.language)}
                                 </TableCell>
                                 <TableCell className="text-sm">
                                     {formatDay(tx.date, i18n.language)}
@@ -188,8 +193,8 @@ export default function TransactionList({ transactions, setTransactions, updateA
                                             <DropdownMenuItem onSelect={() => {
                                                 setCurrent(tx);
                                                 setIsModalOpen(true);
-                                            }} className="text-red-800" disabled={locked}>
-                                                <Trash2Icon className="text-red-500" /> {t('transaction.actions.delete')}
+                                            }} className="text-destructive" disabled={locked}>
+                                                <Trash2Icon className="text-destructive" /> {t('transaction.actions.delete')}
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
