@@ -274,7 +274,8 @@
         "created_at": "Saisie, anciennes d'abord"
       }
     },
-    "new_desc": "Choisissez les deux comptes, le montant et la date."
+    "new_desc": "Choisissez les deux comptes, le montant et la date.",
+    "no_bank": "Crédit et débit indisponibles : le compte banque n'existe pas encore sur le serveur."
   },
   "profile": {
     "info": {

@@ -46,8 +46,14 @@ export const importStatement = async (id, file) => {
     return response.data;
 }
 
-// Counterparty of every external credit and debit.
+// Counterparty of every external credit and debit. null when the API has no
+// bank account yet (404): it is created once on the server, with `create_bank`.
 export const getBankAccount = async () => {
-    const response = await client.get(`${API_URL}/accounts/bank/`);
-    return response.data;
+    try {
+        const response = await client.get(`${API_URL}/accounts/bank/`);
+        return response.data;
+    } catch (error) {
+        if (error.response?.status === 404) return null;
+        throw error;
+    }
 }

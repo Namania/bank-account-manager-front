@@ -273,7 +273,8 @@
       "delete": "Delete",
       "edit": "Edit"
     },
-    "new_desc": "Choose both accounts, the amount and the date."
+    "new_desc": "Choose both accounts, the amount and the date.",
+    "no_bank": "Credit and debit are unavailable: the bank account does not exist on the server yet."
   },
   "profile": {
     "info": {
