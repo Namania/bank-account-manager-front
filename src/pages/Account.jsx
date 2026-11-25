@@ -276,14 +276,14 @@ export default function Account() {
                   <AnimatedMoney value={account.balance} />
                 </FadeAnimation>
               </div>
-              <FadeAnimation delay={1.2} className="mt-6 grid grid-cols-3 gap-2">
-                <Button onClick={() => setTransactionMode("credit")} disabled={!bank} className="transition-transform active:scale-95">
+              <FadeAnimation delay={1.2} className="mt-6 flex flex-wrap gap-2">
+                <Button onClick={() => setTransactionMode("credit")} disabled={!bank} className="flex-1 transition-transform active:scale-95">
                   <PlusIcon /> {t('account.info.actions.credit')}
                 </Button>
-                <Button variant="outline" onClick={() => setTransactionMode("debit")} disabled={!bank} className="bg-background/60 transition-transform active:scale-95">
+                <Button variant="outline" onClick={() => setTransactionMode("debit")} disabled={!bank} className="flex-1 bg-background/60 transition-transform active:scale-95">
                   <MinusIcon /> {t('account.info.actions.debit')}
                 </Button>
-                <Button variant="outline" onClick={() => setTransactionMode("transfer")} className="bg-background/60 transition-transform active:scale-95">
+                <Button variant="outline" onClick={() => setTransactionMode("transfer")} className="flex-1 bg-background/60 transition-transform active:scale-95">
                   <LucideGitCompareArrows /> {t('account.info.actions.transfer')}
                 </Button>
               </FadeAnimation>
